@@ -1,0 +1,13 @@
+# Instrucciones de instalación y ejecución
+
+Actualmente, el proyecto EZJavaCode se encuentra en fase de planificación y diseño. Aún no he comenzado la fase de desarrollo, por lo que no existen archivos ejecutables ni instrucciones técnicas aplicables en este momento.
+
+## Próximos pasos
+
+Cuando se inicie el desarrollo, este documento incluirá:
+
+- Requisitos del sistema (Java, JDK, entorno de desarrollo, etc.).
+- Instrucciones para compilar y ejecutar la aplicación.
+- Información adicional para pruebas o configuraciones específicas.
+
+Este archivo se actualizará progresivamente a medida que el proyecto avance.
