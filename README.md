@@ -1,6 +1,32 @@
 # EZJavaCode
 
-Este proyecto es propiedad de **Rubén Matamoros Trigo**.  
-Todos los derechos reservados. Proyecto desarrollado como parte del TFG del ciclo **Desarrollo de Aplicaciones Multiplataforma** en el IES Albarregas (Mérida).
+**Proyecto Privado — Todos los derechos reservados**  
+© 2025 Rubén Matamoros Trigo
 
-Repositorio privado. No se autoriza la copia, modificación ni distribución del código sin consentimiento explícito.
+---
+
+## Descripción
+
+Este proyecto ha sido desarrollado como parte del **Trabajo Fin de Grado (TFG)** del ciclo de **Desarrollo de Aplicaciones Multiplataforma (DAM)**  
+en el **IES Albarregas** (Mérida, España).
+
+---
+
+## Derechos y uso
+
+Este repositorio es **privado** y su contenido está protegido por la legislación de propiedad intelectual.
+
+- El código fuente, diseño, documentación y cualquier otro material aquí contenido es **propiedad exclusiva** de **Rubén Matamoros Trigo**.
+- **No se autoriza** la copia, modificación, distribución ni publicación parcial o total del proyecto sin consentimiento explícito del autor.
+
+Cualquier uso no autorizado será considerado una infracción legal.
+
+---
+
+## Autor
+
+**Rubén Matamoros Trigo**  
+Desarrollador del proyecto y autor original de EZJavaCode.  
+Estudiante de DAM en el IES Albarregas.
+
+--- 
