@@ -7,6 +7,7 @@ Actualmente, el proyecto EZJavaCode se encuentra en fase de planificación y dis
 Cuando se inicie el desarrollo, este documento incluirá:
 
 - Requisitos del sistema (Java, JDK, entorno de desarrollo, etc.).
+Utilizare JDK 21 y javaFX 21
 - Instrucciones para compilar y ejecutar la aplicación.
 - Información adicional para pruebas o configuraciones específicas.
 
