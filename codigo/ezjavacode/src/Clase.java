@@ -1,3 +1,5 @@
+import Funciones.Funcion;
+
 import java.util.ArrayList;
 import java.util.List;
 
