@@ -1,9 +1,9 @@
 public class Persona {
 
-    private String nombre = "Juan";
+    private String nombre = "Juana";
 
     public void imprimirNombre() {
-        System.out.println("System.out.println(this.nombre);");
+        System.out.println("nombre");
     }
 
 }

@@ -11,17 +11,21 @@ public class Main {
         generador.iniciarNuevaClase("Persona");
 
         // Agregar el atributo 'nombre' de tipo String
-        generador.agregarAtributo("nombre", EnumAtributo.STRING, true, "Juan");  // Asignamos un valor por defecto
+        generador.agregarAtributo("nombre", EnumAtributo.STRING, true, "Juana");  // Asignamos un valor por defecto
 
         // Agregar una función que imprima el nombre
         // Primero, crear la función imprimirNombre
         Funcion imprimirNombre = new Funcion("imprimirNombre", "void");
 
+        String nombre = "nombre";
         // Crear el bloque de imprimir correctamente refiriéndose al atributo 'nombre'
-        imprimirNombre.agregarBloque(new BloqueImprimir("System.out.println(this.nombre);"));
+        imprimirNombre.agregarBloque(new BloqueImprimir(nombre));
+
+
 
         // Agregar la función a la clase
         generador.obtenerClase().agregarFuncion(imprimirNombre);
+
 
         // Obtener la clase generada
         Clase claseGenerada = generador.obtenerClase();
