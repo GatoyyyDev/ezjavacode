@@ -1,4 +1,4 @@
-package Funciones;
+package Funcional.Funciones;
 
 public class BloqueImprimir implements BloqueCodigo {
     private String mensaje;

@@ -1,0 +1,63 @@
+/* Estilos modernos para EZJavaCode */
+.root {
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #eaf6fb 0%, #b3e0ff 100%);
+}
+.title-label {
+    -fx-text-fill: #005b99;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+.subtitle-label {
+    -fx-text-fill: #337ab7;
+    -fx-font-size: 20px;
+}
+.view-title {
+    -fx-text-fill: #005b99;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+.form-panel {
+    -fx-background-color: #f7fbff;
+    -fx-border-color: #b3e0ff;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 20px;
+}
+.menu-button, .back-button, .next-button, .clear-button, .delete-button {
+    -fx-background-color: linear-gradient(to bottom, #4fc3f7 0%, #0288d1 100%);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10 20 10 20;
+    -fx-border-color: #01579b;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+}
+.menu-button:hover, .back-button:hover, .next-button:hover, .clear-button:hover, .delete-button:hover {
+    -fx-background-color: #01579b;
+}
+.class-name-field, .attribute-background, .create-class-background {
+    -fx-background-color: #e3f2fd;
+    -fx-border-color: #90caf9;
+    -fx-border-width: 1.5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+.table-view {
+    -fx-background-color: #f7fbff;
+    -fx-table-cell-border-color: #b3e0ff;
+}
+.table-column-header {
+    -fx-background-color: #0288d1;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.attribute-background {
+    -fx-background-color: #eaf6fb;
+}
+.main-background {
+    -fx-background-color: #eaf6fb;
+}

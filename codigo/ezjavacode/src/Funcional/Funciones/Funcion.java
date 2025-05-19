@@ -1,18 +1,20 @@
-package Funciones;
+package Funcional.Funciones;
 
 import java.util.ArrayList;
 import java.util.List;
-import Funciones.BloqueCodigo;
+import Funcional.Funciones.BloqueCodigo;
 
 public class Funcion {
     private String nombre;
     private String tipoRetorno;
+    private String visibilidad = "public";
     private List<String> parametros; // Lista de parámetros de la función
     private List<BloqueCodigo> bloques; // Lista de bloques de código (modulares)
 
-    public Funcion(String nombre, String tipoRetorno) {
+    public Funcion(String nombre, String tipoRetorno, String visibilidad) {
         this.nombre = nombre;
         this.tipoRetorno = tipoRetorno;
+        this.visibilidad = visibilidad;
         this.parametros = new ArrayList<>();
         this.bloques = new ArrayList<>();
     }
@@ -30,7 +32,7 @@ public class Funcion {
     // Método para generar el código de la función
     public String generarCodigo() {
         StringBuilder sb = new StringBuilder();
-        sb.append("    public ").append(tipoRetorno).append(" ").append(nombre).append("(");
+        sb.append("    ").append(visibilidad).append(" ").append(tipoRetorno).append(" ").append(nombre).append("(");
 
         // Agregar parámetros
         for (int i = 0; i < parametros.size(); i++) {
@@ -48,5 +50,17 @@ public class Funcion {
 
         sb.append("    }\n");
         return sb.toString();
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setVisibilidad(String visibilidad) {
+        this.visibilidad = visibilidad;
+    }
+
+    public String getVisibilidad() {
+        return visibilidad;
     }
 }

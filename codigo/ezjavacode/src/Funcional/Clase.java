@@ -1,4 +1,6 @@
-import Funciones.Funcion;
+package Funcional;
+
+import Funcional.Funciones.Funcion;
 
 import java.util.ArrayList;
 import java.util.List;

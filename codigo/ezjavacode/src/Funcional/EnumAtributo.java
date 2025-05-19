@@ -1,3 +1,5 @@
+package Funcional;
+
 public enum EnumAtributo {
     STRING("String"),
     INTEGER("int"),

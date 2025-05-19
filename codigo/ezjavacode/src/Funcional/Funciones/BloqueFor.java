@@ -1,4 +1,4 @@
-package Funciones;
+package Funcional.Funciones;
 
 public class BloqueFor implements BloqueCodigo {
     private String inicializacion;

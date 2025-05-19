@@ -1,9 +1,6 @@
 public class Persona {
 
-    private String nombre = "Juana";
-
-    public void imprimirNombre() {
-        System.out.println("nombre");
-    }
+    private String Apellido = "Jaque";
+    private final int Edad = 22;
 
 }

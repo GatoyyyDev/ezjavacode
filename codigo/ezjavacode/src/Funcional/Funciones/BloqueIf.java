@@ -1,4 +1,4 @@
-package Funciones;
+package Funcional.Funciones;
 
 public class BloqueIf implements BloqueCodigo {
     private String condicion;

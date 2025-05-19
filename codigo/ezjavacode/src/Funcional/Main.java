@@ -1,4 +1,6 @@
-import Funciones.*;
+package Funcional;
+
+import Funcional.Funciones.*;
 
 import java.io.File;
 
@@ -11,11 +13,11 @@ public class Main {
         generador.iniciarNuevaClase("Persona");
 
         // Agregar el atributo 'nombre' de tipo String
-        generador.agregarAtributo("nombre", EnumAtributo.STRING, true, "Juana");  // Asignamos un valor por defecto
+        generador.agregarAtributo("nombre", EnumAtributo.STRING, true, false, false, "Juana");  // Asignamos un valor por defecto
 
         // Agregar una función que imprima el nombre
         // Primero, crear la función imprimirNombre
-        Funcion imprimirNombre = new Funcion("imprimirNombre", "void");
+        Funcion imprimirNombre = new Funcion("imprimirNombre", "void", "public");
 
         String nombre = "nombre";
         // Crear el bloque de imprimir correctamente refiriéndose al atributo 'nombre'
@@ -35,5 +37,3 @@ public class Main {
         ExportadorDeClases.guardarClaseComoArchivo(claseGenerada, rutaCarpeta);
     }
 }
-
-

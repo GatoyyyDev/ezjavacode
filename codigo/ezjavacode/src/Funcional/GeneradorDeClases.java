@@ -1,3 +1,5 @@
+package Funcional;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,11 +10,11 @@ public class GeneradorDeClases {
         claseActual = new Clase(nombreClase);
     }
 
-    public void agregarAtributo(String nombre, EnumAtributo tipo, boolean esPrivado, String valorInicial) {
+    public void agregarAtributo(String nombre, EnumAtributo tipo, boolean esPrivado, boolean esStatic, boolean esFinal, String valorInicial) {
         if (claseActual == null) {
             throw new IllegalStateException("No se ha iniciado ninguna clase.");
         }
-        Atributo atributo = new Atributo(nombre, tipo, esPrivado, valorInicial);
+        Atributo atributo = new Atributo(nombre, tipo, esPrivado, esStatic, esFinal, valorInicial);
         claseActual.agregarAtributo(atributo);
     }
 
@@ -32,4 +34,3 @@ public class GeneradorDeClases {
         claseActual = null;
     }
 }
-

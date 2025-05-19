@@ -1,13 +1,19 @@
+package Funcional;
+
 public class Atributo {
     private String nombre;
     private EnumAtributo tipo;
     private boolean esPrivado;
+    private boolean esStatic;
+    private boolean esFinal;
     private String valorInicial; // Nuevo campo
 
-    public Atributo(String nombre, EnumAtributo tipo, boolean esPrivado, String valorInicial) {
+    public Atributo(String nombre, EnumAtributo tipo, boolean esPrivado, boolean esStatic, boolean esFinal, String valorInicial) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.esPrivado = esPrivado;
+        this.esStatic = esStatic;
+        this.esFinal = esFinal;
         this.valorInicial = valorInicial;
     }
 
@@ -21,6 +27,14 @@ public class Atributo {
 
     public boolean isEsPrivado() {
         return esPrivado;
+    }
+
+    public boolean isEsStatic() {
+        return esStatic;
+    }
+
+    public boolean isEsFinal() {
+        return esFinal;
     }
 
     public String getValorInicial() {
@@ -39,19 +53,30 @@ public class Atributo {
         this.esPrivado = esPrivado;
     }
 
+    public void setEsStatic(boolean esStatic) {
+        this.esStatic = esStatic;
+    }
+
+    public void setEsFinal(boolean esFinal) {
+        this.esFinal = esFinal;
+    }
+
     public void setValorInicial(String valorInicial) {
         this.valorInicial = valorInicial;
     }
 
     // Generar código Java del atributo
     public String generarCodigo() {
-        String visibilidad = esPrivado ? "private" : "public";
+        StringBuilder vis = new StringBuilder();
+        vis.append(esPrivado ? "private" : "public");
+        if (esStatic) vis.append(" static");
+        if (esFinal) vis.append(" final");
         String tipoJava = tipo.toJavaType();
 
         if (valorInicial != null && !valorInicial.isEmpty()) {
-            return visibilidad + " " + tipoJava + " " + nombre + " = " + formatValorInicial() + ";";
+            return vis + " " + tipoJava + " " + nombre + " = " + formatValorInicial() + ";";
         } else {
-            return visibilidad + " " + tipoJava + " " + nombre + ";";
+            return vis + " " + tipoJava + " " + nombre + ";";
         }
     }
 
