@@ -32,8 +32,9 @@ public class MainMenuView {
         
         // Título de la aplicación
         Label titleLabel = new Label("EZJavaCode");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 36));
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 64));
         titleLabel.getStyleClass().add("title-label");
+        titleLabel.setPadding(new Insets(48, 0, 12, 0));
         
         // Subtítulo
         Label subtitleLabel = new Label("Generador de Código Java");
@@ -61,6 +62,7 @@ public class MainMenuView {
         
         // Botón para mis clases
         Button myClassesBtn = createMenuButton("Mis clases", null);
+        myClassesBtn.setOnAction(e -> application.showMyClassesView());
         
         // Botón para ajustes
         Button settingsBtn = createMenuButton("Ajustes", null);
@@ -84,7 +86,7 @@ public class MainMenuView {
         Button button = new Button(text);
         button.setPrefSize(200, 150);
         button.getStyleClass().add("menu-button");
-        button.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        button.setFont(Font.font("Arial", FontWeight.BOLD, 64)); // Aún más grande
         
         // Si tenemos íconos, los agregaríamos aquí
         // try {

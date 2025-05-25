@@ -27,7 +27,7 @@ public class MethodFormView extends VBox {
 
     public MethodFormView(String className) {
         this.setSpacing(15);
-        this.setPadding(new Insets(20));
+        this.setPadding(new Insets(40, 20, 40, 20));
         this.setAlignment(Pos.CENTER);
         this.setMaxWidth(500);
         this.setMinWidth(420);
@@ -39,25 +39,28 @@ public class MethodFormView extends VBox {
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.getStyleClass().add("view-title");
 
-        // Visibilidad
+        // Visibilidad y tipo en la misma fila
         Label visLabel = new Label("Visibilidad:");
+        visLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         visibilidadCombo = new ComboBox<>();
         visibilidadCombo.getItems().addAll("public", "private", "protected");
         visibilidadCombo.setValue("public");
-        HBox visBox = new HBox(10, visLabel, visibilidadCombo);
-        visBox.setAlignment(Pos.CENTER_LEFT);
-
-        // Nombre de la función
-        nameField = new TextField();
-        HBox nameBox = new HBox(10, new Label("Nombre de la función"), nameField);
-        nameBox.setAlignment(Pos.CENTER_LEFT);
-
-        // Tipo de retorno
+        Label typeLabel = new Label("Elegir tipo");
+        typeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         returnTypeCombo = new ComboBox<>();
         returnTypeCombo.getItems().addAll("void", "int", "double", "String", "boolean");
         returnTypeCombo.setValue("void");
-        HBox typeBox = new HBox(10, new Label("Elegir tipo"), returnTypeCombo);
-        typeBox.setAlignment(Pos.CENTER_LEFT);
+        HBox visTypeBox = new HBox(24, visLabel, visibilidadCombo, typeLabel, returnTypeCombo);
+        visTypeBox.setAlignment(Pos.CENTER_LEFT);
+
+        // Nombre de la función
+        Label nameLabel = new Label("Nombre de la función");
+        nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        nameField = new TextField();
+        nameField.setPrefWidth(240);
+        nameField.setPrefHeight(32);
+        HBox nameBox = new HBox(10, nameLabel, nameField);
+        nameBox.setAlignment(Pos.CENTER_LEFT);
 
         // Parámetros (tabla)
         paramsTable = new TableView<>();
@@ -70,22 +73,19 @@ public class MethodFormView extends VBox {
         tipoCol.setCellValueFactory(new PropertyValueFactory<>("type"));
         tipoCol.setMinWidth(100);
         tipoCol.setMaxWidth(200);
+        tipoCol.setStyle("-fx-alignment: CENTER;");
         TableColumn<ParameterModel, String> nombreCol = new TableColumn<>("Nombre");
         nombreCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         nombreCol.setMinWidth(100);
         nombreCol.setMaxWidth(200);
+        nombreCol.setStyle("-fx-alignment: CENTER;");
         TableColumn<ParameterModel, Void> borrarCol = new TableColumn<>("Eliminar");
         borrarCol.setMinWidth(60);
         borrarCol.setMaxWidth(80);
         borrarCol.setCellFactory(col -> new TableCell<>() {
             private final Button btn = new Button("X");
             {
-                btn.setOnAction(e -> {
-                    int idx = getIndex();
-                    parametros.remove(idx);
-                });
-                btn.setStyle("-fx-background-color: #e57373; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 2 8 2 8; -fx-background-radius: 4;");
-                btn.setPrefWidth(32);
+                btn.setStyle("-fx-background-color: #e57373; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 2 10; -fx-cursor: hand;");
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -106,12 +106,16 @@ public class MethodFormView extends VBox {
 
         // Input para añadir parámetro
         TextField tipoParam = new TextField();
-        tipoParam.setPromptText("Tipo");
         tipoParam.setPrefWidth(100);
+        tipoParam.setPrefHeight(32);
+        tipoParam.setPromptText("Tipo");
         TextField nombreParam = new TextField();
-        nombreParam.setPromptText("Nombre");
         nombreParam.setPrefWidth(100);
+        nombreParam.setPrefHeight(32);
+        nombreParam.setPromptText("Nombre");
         Button addParamBtn = new Button("Añadir parámetro");
+        addParamBtn.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+        addParamBtn.setStyle("-fx-background-color: #3db5ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 5 16; -fx-font-size: 15px; -fx-cursor: hand;");
         addParamBtn.setOnAction(e -> {
             String tipo = tipoParam.getText().trim();
             String nombre = nombreParam.getText().trim();
@@ -125,8 +129,20 @@ public class MethodFormView extends VBox {
             }
         });
         HBox paramInputBox = new HBox(10, tipoParam, nombreParam, addParamBtn);
-        paramInputBox.setAlignment(Pos.CENTER_LEFT);
-        VBox paramsBox = new VBox(7, new Label("Parámetros de entrada"), paramsTable, paramInputBox);
+        paramInputBox.setMinWidth(380);
+        paramInputBox.setMaxWidth(420);
+        paramInputBox.setAlignment(Pos.CENTER);
+
+        // Parámetros de entrada label
+        Label paramsLabel = new Label("Parámetros de entrada");
+        paramsLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+
+        // Placeholder de la tabla en negrita
+        Label emptyLabel = new Label("Tabla sin contenido");
+        emptyLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        paramsTable.setPlaceholder(emptyLabel);
+
+        VBox paramsBox = new VBox(7, paramsLabel, paramsTable, paramInputBox);
         paramsBox.setAlignment(Pos.CENTER);
         paramsBox.setPadding(new Insets(0,0,10,0));
 
@@ -134,17 +150,21 @@ public class MethodFormView extends VBox {
         privado = new CheckBox("¿Privado?");
         estatico = new CheckBox("¿Estático?");
         HBox optionsBox = new HBox(20, privado, estatico);
-        optionsBox.setAlignment(Pos.CENTER_LEFT);
+        optionsBox.setAlignment(Pos.CENTER);
 
         // Código
         Label codeLabel = new Label("Código");
+        codeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         codeArea = new TextArea();
         codeArea.setPromptText("Introduce aquí el código del método...");
         codeArea.setPrefRowCount(5);
 
         // Return
         Label returnLabel = new Label("Return");
+        returnLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         returnField = new TextField();
+        returnField.setPrefWidth(240);
+        returnField.setPrefHeight(32);
         returnField.setPromptText("dejar en blanco para no retornar");
 
         // Botón incluir método
@@ -154,9 +174,8 @@ public class MethodFormView extends VBox {
         // Layout principal
         this.getChildren().addAll(
             title,
-            visBox,
+            visTypeBox,
             nameBox,
-            typeBox,
             paramsBox,
             optionsBox,
             codeLabel, codeArea,

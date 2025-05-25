@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -31,15 +32,17 @@ public class CreateMethodView {
         mainLayout.getStyleClass().add("attribute-background");
 
         // Título
-        Label titleLabel = new Label("Metodos de {" + className + "}");
+        Label titleLabel = new Label("Métodos de " + className);
         titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         titleLabel.getStyleClass().add("view-title");
-        mainLayout.setTop(titleLabel);
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 20, 0));
 
         // Tabla de métodos
         methodTable = new TableView<>();
+        methodTable.setPrefHeight(300); // Reduce la altura preferida de la tabla para que la pantalla sea más compacta
+        methodTable.setStyle("-fx-background-color: white; -fx-control-inner-background: white; -fx-table-cell-border-color: #b3e0ff; -fx-font-size: 17px;");
+        methodTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn<MethodModel, String> nameCol = new TableColumn<>("Nombre");
         nameCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getName()));
         nameCol.setPrefWidth(180);
@@ -50,11 +53,14 @@ public class CreateMethodView {
         paramsCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getParameters()));
         paramsCol.setPrefWidth(180);
         TableColumn<MethodModel, Void> actionsCol = new TableColumn<>("Acciones");
-        actionsCol.setPrefWidth(140);
         actionsCol.setCellFactory(col -> new TableCell<>() {
             private final Button editBtn = new Button("Editar");
             private final Button delBtn = new Button("Eliminar");
             {
+                // Aplica el color #3db5ee a los botones
+                String blueStyle = "-fx-background-color: #3db5ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 5 16; -fx-font-size: 15px; -fx-cursor: hand;";
+                editBtn.setStyle(blueStyle);
+                delBtn.setStyle(blueStyle);
                 editBtn.setOnAction(e -> {
                     MethodModel m = getTableView().getItems().get(getIndex());
                     showEditDialog(m);
@@ -86,39 +92,87 @@ public class CreateMethodView {
                 if (empty) {
                     setGraphic(null);
                 } else {
-                    HBox box = new HBox(5, editBtn, delBtn);
+                    HBox box = new HBox(8, editBtn, delBtn);
+                    box.setAlignment(Pos.CENTER);
                     setGraphic(box);
                 }
             }
         });
+        actionsCol.setPrefWidth(160);
         methodTable.getColumns().setAll(nameCol, typeCol, paramsCol, actionsCol);
         methodTable.setItems(methods);
-        methodTable.setPrefHeight(150);
         methodTable.setPlaceholder(new Label("No hay métodos definidos"));
 
-        // Botón para añadir método nuevo
+        // Centrar valores en las columnas
+        nameCol.setCellFactory(column -> {
+            return new TableCell<MethodModel, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                    setAlignment(Pos.CENTER);
+                }
+            };
+        });
+        typeCol.setCellFactory(column -> {
+            return new TableCell<MethodModel, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                    setAlignment(Pos.CENTER);
+                }
+            };
+        });
+        paramsCol.setCellFactory(column -> {
+            return new TableCell<MethodModel, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                    setAlignment(Pos.CENTER);
+                }
+            };
+        });
+
+        // Forzar color azul en la cabecera desde Java
+        methodTable.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            Node header = methodTable.lookup(".column-header-background");
+            if (header != null) {
+                header.setStyle("-fx-background-color: #3db5ee;");
+            }
+        });
+
+        // --- Botones alineados en una sola línea ---
+        Button backBtn = new Button("← Volver");
+        backBtn.getStyleClass().add("back-button");
+        backBtn.setPrefWidth(140);
+        backBtn.setOnAction(e -> application.showCreateAttributeView(className));
+
         Button addMethodBtn = new Button("Añadir Método nuevo");
         addMethodBtn.getStyleClass().add("menu-button");
+        addMethodBtn.setPrefWidth(220);
         addMethodBtn.setOnAction(e -> {
             MethodFormView form = new MethodFormView(className);
             Stage dialog = new Stage();
             dialog.setTitle("Nuevo Método");
             dialog.initOwner(mainLayout.getScene().getWindow());
             dialog.initModality(Modality.WINDOW_MODAL);
-            VBox dialogVBox = new VBox(form);
-            dialogVBox.setPadding(new Insets(20));
-            Scene dialogScene = new Scene(dialogVBox, 700, 700);
+            StackPane root = new StackPane(form);
+            root.setStyle("-fx-background-color: #eaf6fb;");
+            root.setPadding(new Insets(32, 0, 32, 0)); // Espacio arriba y abajo
+            StackPane.setAlignment(form, Pos.CENTER);
+            Scene dialogScene = new Scene(root, 700, 700);
+            String css = getClass().getResource("/css/style.css").toExternalForm();
+            dialogScene.getStylesheets().add(css);
             dialog.setScene(dialogScene);
             dialog.setResizable(false);
             dialog.centerOnScreen();
-            String css = getClass().getResource("/css/style.css").toExternalForm();
-            dialogScene.getStylesheets().add(css);
             // Al guardar el método
             form.getIncluirButton().setOnAction(ev -> {
                 MethodModel m = form.getMethodModel();
                 if (m != null) {
                     methods.add(m);
-                    // --- Integración lógica ---
                     var generador = application.getGenerador();
                     if (generador != null) {
                         var clase = generador.obtenerClase();
@@ -149,35 +203,47 @@ public class CreateMethodView {
             });
             dialog.showAndWait();
         });
-        VBox methodsBox = new VBox(10, methodTable, addMethodBtn);
-        methodsBox.setAlignment(Pos.CENTER_LEFT);
-        methodsBox.setPadding(new Insets(10, 0, 10, 0));
 
-        VBox formPanel = new VBox(20, methodsBox);
-        formPanel.setAlignment(Pos.CENTER);
-
-        // Botón exportar
-        Button exportBtn = new Button("Exportar {" + className + "}");
+        Button exportBtn = new Button("Exportar " + className);
         exportBtn.getStyleClass().add("menu-button");
-        exportBtn.setPrefWidth(300);
+        exportBtn.setPrefWidth(220);
         exportBtn.setOnAction(e -> {
             var generador = application.getGenerador();
             if (generador != null) {
                 var clase = generador.obtenerClase();
-                String rutaExport = "clases_generadas"; // Carpeta correcta
-                Funcional.ExportadorDeClases.guardarClaseComoArchivo(clase, rutaExport);
-                mostrarAlertaExportacionExitosa(clase.getNombre(), rutaExport);
                 application.showGeneratedCode(clase.generarCodigo());
             }
         });
-        VBox exportBox = new VBox(exportBtn);
-        exportBox.setAlignment(Pos.CENTER);
-        exportBox.setPadding(new Insets(30, 0, 0, 0));
 
-        // Panel central
-        VBox centerBox = new VBox(30, formPanel, exportBox);
-        centerBox.setAlignment(Pos.CENTER);
-        mainLayout.setCenter(centerBox);
+        Region spacer1 = new Region();
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer1, Priority.ALWAYS);
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+        HBox bottomBox = new HBox(20, backBtn, spacer1, addMethodBtn, spacer2, exportBtn);
+        bottomBox.setAlignment(Pos.CENTER);
+        bottomBox.setPadding(new Insets(0, 32, 0, 32)); // Sin margen inferior
+
+        // Agrupa título, tabla y botones en un solo VBox
+        VBox contentBox = new VBox(16, titleLabel, methodTable, bottomBox); // Espacio agradable entre título, tabla y botones
+        contentBox.setAlignment(Pos.TOP_CENTER);
+        contentBox.setPadding(new Insets(0, 32, 0, 32));
+
+        // Layout principal
+        BorderPane layout = new BorderPane();
+        layout.setTop(contentBox); // Todo el contenido va arriba
+        layout.setCenter(null);
+        layout.setBottom(null);
+        layout.setStyle("-fx-background-color: #eaf6fb;");
+        String css = getClass().getResource("/css/style.css").toExternalForm();
+        layout.getStylesheets().add(css);
+        mainLayout.setCenter(layout);
+        mainLayout.setMinHeight(Region.USE_COMPUTED_SIZE);
+        mainLayout.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        if (mainLayout.getScene() != null && mainLayout.getScene().getWindow() instanceof Stage) {
+            Stage stage = (Stage) mainLayout.getScene().getWindow();
+            stage.sizeToScene();
+            stage.setResizable(false);
+        }
     }
 
     // --- Diálogo de edición ---
@@ -206,15 +272,17 @@ public class CreateMethodView {
         Stage dialog = new Stage();
         dialog.setTitle("Editar Método");
         dialog.initOwner(mainLayout.getScene().getWindow());
-        dialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
-        VBox dialogVBox = new VBox(form);
-        dialogVBox.setPadding(new Insets(20));
-        Scene dialogScene = new Scene(dialogVBox, 700, 700);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        StackPane root = new StackPane(form);
+        root.setStyle("-fx-background-color: #eaf6fb;");
+        root.setPadding(new Insets(32, 0, 32, 0)); // Espacio arriba y abajo
+        StackPane.setAlignment(form, Pos.CENTER);
+        Scene dialogScene = new Scene(root, 700, 700);
+        String css = getClass().getResource("/css/style.css").toExternalForm();
+        dialogScene.getStylesheets().add(css);
         dialog.setScene(dialogScene);
         dialog.setResizable(false);
         dialog.centerOnScreen();
-        String css = getClass().getResource("/css/style.css").toExternalForm();
-        dialogScene.getStylesheets().add(css);
         form.getIncluirButton().setText("Guardar Cambios");
         form.getIncluirButton().setOnAction(ev -> {
             MethodModel nuevo = form.getMethodModel();

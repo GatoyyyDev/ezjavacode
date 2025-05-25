@@ -15,6 +15,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -67,6 +68,7 @@ public class CreateAttributeView {
         mainLayout = new BorderPane();
         mainLayout.getStyleClass().add("attribute-background");
         mainLayout.setPadding(new Insets(20));
+        mainLayout.setMinHeight(700); // Altura mínima para que los botones de abajo siempre sean visibles
         
         // Título de la ventana con el nombre de la clase
         Label titleLabel = new Label("Crear Atributos de " + className);
@@ -100,33 +102,58 @@ public class CreateAttributeView {
      */
     private void createAttributeTable() {
         attributeTable = new TableView<>();
-        attributeTable.setPlaceholder(new Label("No hay atributos definidos"));
-        
+        Label placeholderLabel = new Label("No hay atributos definidos");
+        placeholderLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #1170d6;");
+        attributeTable.setPlaceholder(placeholderLabel);
+
         // Columna de tipo
         TableColumn<AttributeModel, String> typeColumn = new TableColumn<>("Tipo");
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        typeColumn.setPrefWidth(100);
-        
+        typeColumn.setPrefWidth(120);
+
         // Columna de nombre
         TableColumn<AttributeModel, String> nameColumn = new TableColumn<>("Nombre");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setPrefWidth(150);
-        
+        nameColumn.setPrefWidth(160);
+
         // Columna de valor
         TableColumn<AttributeModel, String> valueColumn = new TableColumn<>("Valor Inicial");
         valueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
-        valueColumn.setPrefWidth(150);
-        
+        valueColumn.setPrefWidth(160);
+
         // Columna de visibilidad
         TableColumn<AttributeModel, String> visibilityColumn = new TableColumn<>("Visibilidad");
         visibilityColumn.setCellValueFactory(new PropertyValueFactory<>("visibility"));
-        visibilityColumn.setPrefWidth(100);
-        
+        visibilityColumn.setPrefWidth(120);
+
         // Configurar la tabla
         attributeTable.getColumns().addAll(typeColumn, nameColumn, valueColumn, visibilityColumn);
         attributeTable.setItems(attributes);
-        attributeTable.setPrefHeight(200);
-        
+        // Mostrar siempre al menos 4 filas
+        attributeTable.setFixedCellSize(42);
+        attributeTable.setPrefHeight(42 * 4 + 40); // 4 filas + header
+        attributeTable.setMinHeight(42 * 4 + 40);
+        attributeTable.setMaxHeight(42 * 8 + 40); // máximo 8 filas visibles
+        attributeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // --- ESTILOS ---
+        // Color de header #3db5ee
+        String botonColor = "#3db5ee";
+        attributeTable.setStyle("-fx-font-size: 18px; -fx-background-radius: 10px; -fx-background-color: white; -fx-border-color: #b3e0ff; -fx-border-width: 2px; -fx-table-cell-border-color: #b3e0ff; -fx-table-header-border-color: " + botonColor + ";");
+
+        // Header y celdas con CellFactory
+        String headerStyle = "-fx-alignment: CENTER; -fx-font-weight: bold; -fx-background-color: " + botonColor + "; -fx-text-fill: white;";
+        typeColumn.setStyle(headerStyle);
+        nameColumn.setStyle(headerStyle);
+        valueColumn.setStyle(headerStyle);
+        visibilityColumn.setStyle(headerStyle);
+
+        // Centrar los valores de las celdas
+        typeColumn.setCellFactory(col -> cellStyleFactoryCenter());
+        nameColumn.setCellFactory(col -> cellStyleFactoryCenter());
+        valueColumn.setCellFactory(col -> cellStyleFactoryCenter());
+        visibilityColumn.setCellFactory(col -> cellStyleFactoryCenter());
+
         // Manejar doble clic para editar
         attributeTable.setRowFactory(tv -> {
             TableRow<AttributeModel> row = new TableRow<>();
@@ -139,6 +166,18 @@ public class CreateAttributeView {
             return row;
         });
     }
+
+    // Fábrica para celdas centradas con estilo
+    private <T> TableCell<AttributeModel, T> cellStyleFactoryCenter() {
+        return new TableCell<AttributeModel, T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? null : item != null ? item.toString() : "");
+                setStyle("-fx-font-size: 18px; -fx-padding: 6 10 6 10; -fx-background-color: white; -fx-border-color: #b3e0ff; -fx-border-width: 0 0 1 0; -fx-alignment: CENTER;");
+            }
+        };
+    }
     
     /**
      * Crea el formulario para agregar o editar atributos
@@ -147,44 +186,64 @@ public class CreateAttributeView {
         VBox formBox = new VBox(15);
         formBox.setPadding(new Insets(10));
         formBox.getStyleClass().add("form-panel");
+        formBox.setStyle("-fx-background-color: #f7fbff; -fx-background-radius: 12px; -fx-padding: 24 32 24 32; -fx-effect: dropshadow(three-pass-box, #b3e0ff, 8, 0.1, 0, 2);");
         
         // Título del formulario
         Label formTitle = new Label("Agregar/Editar Atributo");
         formTitle.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        formTitle.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #005b99; -fx-padding: 0 0 8 0;");
         
         // Crear el grid para los campos
         GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setHgap(16);
+        grid.setVgap(16);
         grid.setPadding(new Insets(10, 0, 10, 0));
+        grid.setStyle("-fx-font-size: 16px;");
         
         // Campo tipo
         Label typeLabel = new Label("Tipo:");
+        typeLabel.setStyle("-fx-font-weight: bold;");
         typeComboBox = new ComboBox<>();
         typeComboBox.getItems().addAll("String", "int", "double", "boolean");
         typeComboBox.setValue("String");
         typeComboBox.setPrefWidth(150);
+        typeComboBox.setStyle("-fx-font-size: 15px; -fx-background-radius: 8px; -fx-padding: 2 8 2 8;");
         
         // Campo nombre
         Label nameLabel = new Label("Nombre:");
+        nameLabel.setStyle("-fx-font-weight: bold;");
         nameField = new TextField();
         nameField.setPromptText("nombreAtributo");
+        nameField.setPrefWidth(260);
+        nameField.setStyle("-fx-font-size: 18px; -fx-background-radius: 8px; -fx-padding: 8 12 8 12;");
         
         // Campo valor inicial
         Label valueLabel = new Label("Valor Inicial:");
+        valueLabel.setStyle("-fx-font-weight: bold;");
         valueField = new TextField();
         valueField.setPromptText("(opcional)");
+        valueField.setPrefWidth(260);
+        valueField.setStyle("-fx-font-size: 18px; -fx-background-radius: 8px; -fx-padding: 8 12 8 12;");
         booleanComboBox = new ComboBox<>();
         booleanComboBox.getItems().addAll("true", "false");
         booleanComboBox.setValue("true");
         booleanComboBox.setVisible(false);
+        booleanComboBox.setStyle("-fx-font-size: 15px; -fx-background-radius: 8px; -fx-padding: 2 8 2 8;");
         
         // Campo visibilidad
         Label visibilityLabel = new Label("Visibilidad:");
+        visibilityLabel.setStyle("-fx-font-weight: bold;");
         privateCheckBox = new CheckBox("Private");
         privateCheckBox.setSelected(true);
+        privateCheckBox.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 0 12 0 0;");
         staticCheckBox = new CheckBox("Static");
+        staticCheckBox.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 0 12 0 0;");
         finalCheckBox = new CheckBox("Final");
+        finalCheckBox.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 0 12 0 0;");
+        
+        // Agrupar los checkbox en una fila
+        HBox checkBoxRow = new HBox(24, staticCheckBox, finalCheckBox, privateCheckBox);
+        checkBoxRow.setAlignment(Pos.CENTER_LEFT);
         
         // Agregar campos al grid
         grid.add(typeLabel, 0, 0);
@@ -194,9 +253,7 @@ public class CreateAttributeView {
         grid.add(valueLabel, 0, 2);
         grid.add(valueField, 1, 2);
         grid.add(booleanComboBox, 1, 2);
-        grid.add(staticCheckBox, 0, 3);
-        grid.add(finalCheckBox, 1, 3);
-        grid.add(privateCheckBox, 0, 4);
+        grid.add(checkBoxRow, 0, 3, 2, 1);
         
         // Botones de acción
         Button addButton = new Button("Agregar");
@@ -214,7 +271,7 @@ public class CreateAttributeView {
         // Contenedor para los botones
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.getChildren().addAll(addButton, deleteButton, clearButton);
+        buttonBox.getChildren().setAll(deleteButton, clearButton, addButton);
         
         // Agregar todo al formulario
         formBox.getChildren().addAll(formTitle, grid, buttonBox);
@@ -378,14 +435,17 @@ public class CreateAttributeView {
      */
     private void handleNextStep() {
         if (attributes.isEmpty()) {
-            showAlert("Aviso", "No has definido ningún atributo. ¿Estás seguro de que quieres continuar?");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Aviso");
+            alert.setHeaderText(null);
+            alert.setContentText("No has definido ningún atributo. ¿Estás seguro de que quieres continuar?");
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+                application.showCreateMethodView(className);
+            }
+            return;
         }
-        GeneradorDeClases generador = application.getGenerador();
-        if (generador != null) {
-            application.showCreateMethodView(application.getCurrentClassName());
-        } else {
-            application.showMainMenu();
-        }
+        application.showCreateMethodView(className);
     }
     
     /**
@@ -397,6 +457,40 @@ public class CreateAttributeView {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    
+    /**
+     * Diálogo personalizado para avisos
+     */
+    private void showCustomInfoDialog(String mensaje) {
+        Stage dialog = new Stage();
+        dialog.initOwner(mainLayout.getScene().getWindow());
+        dialog.setTitle("Aviso");
+        VBox box = new VBox(18);
+        box.setPadding(new Insets(28, 36, 24, 36));
+        box.setStyle("-fx-background-color: #f7fbff; -fx-background-radius: 14px; -fx-effect: dropshadow(three-pass-box, #b3e0ff, 8, 0.1, 0, 2);");
+        HBox msgBox = new HBox(12);
+        msgBox.setAlignment(Pos.CENTER_LEFT);
+        // Icono info
+        Label icon = new Label("\u2139");
+        icon.setStyle("-fx-font-size: 32px; -fx-text-fill: #005b99; -fx-font-weight: bold;");
+        // Texto
+        Label msg = new Label(mensaje);
+        msg.setStyle("-fx-font-size: 16px; -fx-text-fill: #005b99; -fx-font-weight: bold;");
+        msgBox.getChildren().addAll(icon, msg);
+        // Botón aceptar
+        Button okBtn = new Button("Aceptar");
+        okBtn.setStyle("-fx-background-color: linear-gradient(#3db5ee, #1170d6); -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-font-size: 16px; -fx-padding: 8 28 8 28;");
+        okBtn.setDefaultButton(true);
+        okBtn.setOnAction(e -> dialog.close());
+        HBox btnBox = new HBox(okBtn);
+        btnBox.setAlignment(Pos.CENTER_RIGHT);
+        btnBox.setPadding(new Insets(18, 0, 0, 0));
+        box.getChildren().addAll(msgBox, btnBox);
+        Scene scene = new Scene(box);
+        dialog.setScene(scene);
+        dialog.setResizable(false);
+        dialog.showAndWait();
     }
     
     /**

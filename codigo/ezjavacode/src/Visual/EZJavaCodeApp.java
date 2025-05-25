@@ -67,7 +67,7 @@ public class EZJavaCodeApp extends Application {
     public void showCreateAttributeView(String className) {
         setCurrentClassName(className);
         Visual.CreateAttributeView createAttributeView = new CreateAttributeView(this, className);
-        Scene scene = new Scene(createAttributeView.getView(), 700, 600);
+        Scene scene = new Scene(createAttributeView.getView(), 900, 750); // Aumenta altura y ancho por defecto
         // Cargamos el CSS directamente desde la carpeta de recursos
         String css = getClass().getResource("/css/style.css").toExternalForm();
         scene.getStylesheets().add(css);
@@ -82,10 +82,25 @@ public class EZJavaCodeApp extends Application {
      * @param code Código generado
      */
     public void showGeneratedCode(String code) {
-        // Ventana simple para mostrar el código generado
+        // Crear layout principal
+        javafx.scene.layout.BorderPane layout = new javafx.scene.layout.BorderPane();
         javafx.scene.control.TextArea area = new javafx.scene.control.TextArea(code);
         area.setEditable(false);
-        Scene scene = new Scene(area, 800, 600);
+        area.getStyleClass().add("code-preview-area");
+        layout.setCenter(area);
+        
+        // Botón para volver al menú principal
+        javafx.scene.control.Button backButton = new javafx.scene.control.Button("Volver al menú principal");
+        backButton.getStyleClass().add("menu-button");
+        backButton.setOnAction(e -> showMainMenu());
+        layout.setBottom(backButton);
+        javafx.scene.layout.BorderPane.setMargin(backButton, new javafx.geometry.Insets(10));
+        javafx.scene.layout.BorderPane.setAlignment(backButton, javafx.geometry.Pos.CENTER);
+        
+        javafx.scene.Scene scene = new javafx.scene.Scene(layout, 800, 600);
+        // Añadir CSS para que el botón se vea igual que en el resto de la app
+        String css = getClass().getResource("/css/style.css").toExternalForm();
+        scene.getStylesheets().add(css);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Código generado");
     }
@@ -97,11 +112,36 @@ public class EZJavaCodeApp extends Application {
      */
     public void showCreateMethodView(String className) {
         Visual.CreateMethodView createMethodView = new CreateMethodView(this, className);
-        Scene scene = new Scene(createMethodView.getView(), 900, 700); // Ventana más grande
+        Scene scene = new Scene(createMethodView.getView()); 
+        primaryStage.setScene(scene);
+        primaryStage.sizeToScene();
+        primaryStage.setResizable(false); 
+    }
+    
+    /**
+     * Muestra la ventana de listado de clases generadas
+     */
+    public void showMyClassesView() {
+        MyClassesView view = new MyClassesView(this);
+        Scene scene = new Scene(view.getView(), 800, 600);
         String css = getClass().getResource("/css/style.css").toExternalForm();
         scene.getStylesheets().add(css);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("EZJavaCode - Métodos de " + className);
+        primaryStage.setTitle("Mis clases");
+    }
+    
+    /**
+     * Muestra la ventana de visualización de la clase
+     * 
+     * @param className Nombre de la clase a visualizar
+     */
+    public void showViewClassView(String className) {
+        ViewClassView view = new ViewClassView(this, className);
+        Scene scene = new Scene(view.getView(), 800, 600);
+        String css = getClass().getResource("/css/style.css").toExternalForm();
+        scene.getStylesheets().add(css);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Clase " + className);
     }
     
     /**
