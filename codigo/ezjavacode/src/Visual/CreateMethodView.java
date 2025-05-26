@@ -211,6 +211,9 @@ public class CreateMethodView {
             var generador = application.getGenerador();
             if (generador != null) {
                 var clase = generador.obtenerClase();
+                String rutaCarpeta = "clases_generadas";
+                Funcional.ExportadorDeClases.guardarClaseComoArchivo(clase, rutaCarpeta);
+                mostrarAlertaExportacionExitosa(clase.getNombre(), rutaCarpeta);
                 application.showGeneratedCode(clase.generarCodigo());
             }
         });
