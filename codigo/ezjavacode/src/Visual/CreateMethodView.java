@@ -23,7 +23,20 @@ public class CreateMethodView {
     public CreateMethodView(Visual.EZJavaCodeApp application, String className) {
         this.application = application;
         this.className = className;
+        this.methods = javafx.collections.FXCollections.observableArrayList();
+        // --- Asegurar que el generador tiene la clase cargada ---
+        Funcional.GeneradorDeClases generador = application.getGenerador();
+        if (generador == null || generador.obtenerClase() == null || !className.equals(generador.obtenerClase().getNombre())) {
+            java.io.File file = new java.io.File("clases_generadas/" + className + ".java");
+            Funcional.Clase clase = Funcional.ClaseParser.parse(file);
+            if (generador == null) {
+                generador = new Funcional.GeneradorDeClases();
+                application.setGenerador(generador);
+            }
+            generador.setClase(clase);
+        }
         createView();
+        precargarMetodosDesdeGenerador();
     }
 
     private void createView() {
@@ -246,6 +259,38 @@ public class CreateMethodView {
             Stage stage = (Stage) mainLayout.getScene().getWindow();
             stage.sizeToScene();
             stage.setResizable(false);
+        }
+    }
+
+    // Precarga los métodos del generador si existen (para edición)
+    private void precargarMetodosDesdeGenerador() {
+        var generador = application.getGenerador();
+        if (generador != null && generador.obtenerClase() != null) {
+            methods.clear();
+            for (var fun : generador.obtenerClase().getFunciones()) {
+                String params = fun.getParametros() != null ? String.join(", ", fun.getParametros()) : "";
+                // Obtener el cuerpo del método (primer bloque)
+                String cuerpo = "";
+                String returnValue = "";
+                if (fun.getBloques() != null && !fun.getBloques().isEmpty()) {
+                    cuerpo = fun.getBloques().get(0).generarCodigo();
+                    // Buscar return en el cuerpo
+                    java.util.regex.Matcher mRet = java.util.regex.Pattern.compile("return (.+);\\s*").matcher(cuerpo);
+                    if (mRet.find()) {
+                        returnValue = mRet.group(1).trim();
+                    }
+                }
+                methods.add(new MethodModel(
+                    fun.getNombre(),
+                    fun.getTipoRetorno(),
+                    params,
+                    fun.getVisibilidad(),
+                    "private".equalsIgnoreCase(fun.getVisibilidad()),
+                    false,
+                    cuerpo,
+                    returnValue
+                ));
+            }
         }
     }
 

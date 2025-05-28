@@ -27,40 +27,45 @@ public class MethodFormView extends VBox {
 
     public MethodFormView(String className) {
         this.setSpacing(15);
-        this.setPadding(new Insets(40, 20, 40, 20));
+        this.setPadding(new Insets(40, 48, 40, 48));
         this.setAlignment(Pos.CENTER);
-        this.setMaxWidth(500);
+        this.setPrefWidth(650);
+        this.setMaxWidth(650);
         this.setMinWidth(420);
         this.setStyle("-fx-background-color: #f7fbff; -fx-border-color: #90caf9; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12;");
         this.getStyleClass().add("form-panel");
 
         // Título
-        Label title = new Label("Crear Metodos/Funciones de {" + className + "}");
+        Label title = new Label("Crear Metodos/Funciones de " + className);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         title.getStyleClass().add("view-title");
 
-        // Visibilidad y tipo en la misma fila
+        // Fila 1: Visibilidad y tipo
+        HBox fila1 = new HBox(18);
+        fila1.setAlignment(Pos.CENTER);
         Label visLabel = new Label("Visibilidad:");
         visLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         visibilidadCombo = new ComboBox<>();
         visibilidadCombo.getItems().addAll("public", "private", "protected");
         visibilidadCombo.setValue("public");
-        Label typeLabel = new Label("Elegir tipo");
-        typeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        Label tipoLabel = new Label("Elegir tipo");
+        tipoLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         returnTypeCombo = new ComboBox<>();
         returnTypeCombo.getItems().addAll("void", "int", "double", "String", "boolean");
         returnTypeCombo.setValue("void");
-        HBox visTypeBox = new HBox(24, visLabel, visibilidadCombo, typeLabel, returnTypeCombo);
-        visTypeBox.setAlignment(Pos.CENTER_LEFT);
+        fila1.getChildren().addAll(visLabel, visibilidadCombo, tipoLabel, returnTypeCombo);
 
-        // Nombre de la función
-        Label nameLabel = new Label("Nombre de la función");
-        nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        // Fila 2: Nombre de la función
+        HBox fila2 = new HBox(12);
+        fila2.setAlignment(Pos.CENTER);
+        Label nombreLabel = new Label("Nombre de la función");
+        nombreLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         nameField = new TextField();
         nameField.setPrefWidth(240);
         nameField.setPrefHeight(32);
-        HBox nameBox = new HBox(10, nameLabel, nameField);
-        nameBox.setAlignment(Pos.CENTER_LEFT);
+        fila2.getChildren().addAll(nombreLabel, nameField);
+
+        this.getChildren().addAll(title, fila1, fila2);
 
         // Parámetros (tabla)
         paramsTable = new TableView<>();
@@ -173,9 +178,6 @@ public class MethodFormView extends VBox {
 
         // Layout principal
         this.getChildren().addAll(
-            title,
-            visTypeBox,
-            nameBox,
             paramsBox,
             optionsBox,
             codeLabel, codeArea,

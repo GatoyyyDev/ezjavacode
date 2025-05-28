@@ -59,6 +59,7 @@ public class CreateAttributeView {
         this.application = application;
         this.className = className;
         createView();
+        precargarAtributosDesdeGenerador();
     }
     
     /**
@@ -149,10 +150,10 @@ public class CreateAttributeView {
         visibilityColumn.setStyle(headerStyle);
 
         // Centrar los valores de las celdas
-        typeColumn.setCellFactory(col -> cellStyleFactoryCenter());
-        nameColumn.setCellFactory(col -> cellStyleFactoryCenter());
-        valueColumn.setCellFactory(col -> cellStyleFactoryCenter());
-        visibilityColumn.setCellFactory(col -> cellStyleFactoryCenter());
+        TableCellFactoryRedCenter(typeColumn);
+        TableCellFactoryRedCenter(nameColumn);
+        TableCellFactoryRedCenter(valueColumn);
+        TableCellFactoryRedCenter(visibilityColumn);
 
         // Manejar doble clic para editar
         attributeTable.setRowFactory(tv -> {
@@ -165,18 +166,6 @@ public class CreateAttributeView {
             });
             return row;
         });
-    }
-
-    // Fábrica para celdas centradas con estilo
-    private <T> TableCell<AttributeModel, T> cellStyleFactoryCenter() {
-        return new TableCell<AttributeModel, T>() {
-            @Override
-            protected void updateItem(T item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty ? null : item != null ? item.toString() : "");
-                setStyle("-fx-font-size: 18px; -fx-padding: 6 10 6 10; -fx-background-color: white; -fx-border-color: #b3e0ff; -fx-border-width: 0 0 1 0; -fx-alignment: CENTER;");
-            }
-        };
     }
     
     /**
@@ -348,6 +337,16 @@ public class CreateAttributeView {
      */
     private void handleAddAttribute() {
         String name = nameField.getText().trim();
+        // Validar si ya existe un atributo con ese nombre (ignorando mayúsculas/minúsculas)
+        boolean existe = attributes.stream().anyMatch(attr -> attr.getName().equalsIgnoreCase(name));
+        if (existe) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Ya existe un atributo con el nombre '" + name + "'.");
+            alert.showAndWait();
+            return;
+        }
         String type = typeComboBox.getValue();
         String enumType = type;
         if (type.equalsIgnoreCase("int")) enumType = "INTEGER";
@@ -424,6 +423,11 @@ public class CreateAttributeView {
         AttributeModel selected = attributeTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             attributes.remove(selected);
+            // Eliminar también del modelo/clase real
+            GeneradorDeClases generador = application.getGenerador();
+            if (generador != null && generador.obtenerClase() != null) {
+                generador.obtenerClase().getAtributos().removeIf(attr -> attr.getNombre().equals(selected.getName()));
+            }
             clearForm();
         } else {
             showAlert("Aviso", "Selecciona un atributo para eliminar");
@@ -547,5 +551,50 @@ public class CreateAttributeView {
         public void setVisibility(String visibility) {
             this.visibility = visibility;
         }
+    }
+    
+    // Precarga los atributos del generador si existen (para edición)
+    private void precargarAtributosDesdeGenerador() {
+        GeneradorDeClases generador = application.getGenerador();
+        if (generador != null && generador.obtenerClase() != null) {
+            attributes.clear();
+            for (Funcional.Atributo attr : generador.obtenerClase().getAtributos()) {
+                String tipo = attr.getTipo().name().equals("INTEGER") ? "int" :
+                              attr.getTipo().name().equals("DOUBLE") ? "double" :
+                              attr.getTipo().name().equals("BOOLEAN") ? "boolean" : "String";
+                String valor = attr.getValorInicial() != null ? attr.getValorInicial() : "";
+                // LIMPIAR COMILLAS DOBLES EXTERNAS si es string
+                if (attr.getTipo() == Funcional.EnumAtributo.STRING) {
+                    valor = valor.trim();
+                    while (valor.startsWith("\"") && valor.endsWith("\"")) {
+                        valor = valor.substring(1, valor.length() - 1).trim();
+                    }
+                }
+                String vis = attr.isEsPrivado() ? "private" : "public";
+                attributes.add(new AttributeModel(tipo, attr.getNombre(), valor, vis));
+            }
+        }
+    }
+    
+    /**
+     * Aplica un cellFactory a la columna para mostrar el texto en rojo y centrado al seleccionar
+     */
+    private void TableCellFactoryRedCenter(TableColumn<AttributeModel, String> col) {
+        col.setCellFactory(column -> new TableCell<AttributeModel, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    setStyle("-fx-alignment: CENTER;");
+                    if (getTableRow() != null && getTableRow().isSelected()) {
+                        setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-alignment: CENTER;");
+                    }
+                }
+            }
+        });
     }
 }

@@ -33,4 +33,9 @@ public class GeneradorDeClases {
     public void reiniciar() {
         claseActual = null;
     }
+
+    // Permite cargar una clase ya existente en el generador
+    public void setClase(Clase clase) {
+        this.claseActual = clase;
+    }
 }

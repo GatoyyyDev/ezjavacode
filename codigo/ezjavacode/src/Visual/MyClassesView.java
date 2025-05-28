@@ -51,7 +51,16 @@ public class MyClassesView {
         scrollPane.setFitToWidth(true);
         scrollPane.setPrefViewportHeight(6 * 48); 
         scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
-        mainLayout.setCenter(scrollPane);
+
+        // --- RECUADRO BLANCO DETRÁS DEL GRID ---
+        VBox whiteBox = new VBox(scrollPane);
+        whiteBox.setAlignment(Pos.CENTER);
+        whiteBox.setPadding(new Insets(36, 48, 36, 48));
+        whiteBox.setStyle("-fx-background-color: white; -fx-background-radius: 18px; -fx-effect: dropshadow(three-pass-box, #b3e0ff, 14, 0.12, 0, 2);");
+        VBox centerBox = new VBox(whiteBox);
+        centerBox.setAlignment(Pos.CENTER);
+        centerBox.setPadding(new Insets(0, 24, 0, 24));
+        mainLayout.setCenter(centerBox);
 
         // Botón para volver al menú principal
         Button backButton = new Button("← Volver al Menú");
@@ -86,6 +95,19 @@ public class MyClassesView {
             delBtn.setOnAction(e -> showDeleteDialog(classNameFinal, classFileFinal));
 
             viewBtn.setOnAction(e -> application.showViewClassView(classNameFinal));
+
+            editBtn.setOnAction(e -> {
+                // Parsear la clase y cargarla en el generador
+                File file = new File("clases_generadas/" + classNameFinal + ".java");
+                Funcional.Clase clase = Funcional.ClaseParser.parse(file);
+                if (clase != null) {
+                    Funcional.GeneradorDeClases generador = new Funcional.GeneradorDeClases();
+                    generador.setClase(clase);
+                    application.setGenerador(generador);
+                    application.setCurrentClassName(classNameFinal);
+                    application.showCreateAttributeView(classNameFinal);
+                }
+            });
 
             HBox btnBox = new HBox(18, editBtn, viewBtn, delBtn);
             btnBox.setAlignment(Pos.CENTER);

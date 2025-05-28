@@ -43,9 +43,13 @@ public class Funcion {
         }
         sb.append(") {\n");
 
-        // Agregar bloques de código
+        // Agregar bloques de código con indentación por línea
         for (BloqueCodigo bloque : bloques) {
-            sb.append("        ").append(bloque.generarCodigo()).append("\n");
+            String bloqueCodigo = bloque.generarCodigo();
+            String[] lineas = bloqueCodigo.split("\\r?\\n");
+            for (String linea : lineas) {
+                sb.append("        ").append(linea).append("\n");
+            }
         }
 
         sb.append("    }\n");
@@ -62,5 +66,20 @@ public class Funcion {
 
     public String getVisibilidad() {
         return visibilidad;
+    }
+
+    // Devuelve la lista de parámetros
+    public List<String> getParametros() {
+        return parametros;
+    }
+
+    // Devuelve el tipo de retorno de la función
+    public String getTipoRetorno() {
+        return tipoRetorno;
+    }
+
+    // Devuelve la lista de bloques de código
+    public List<BloqueCodigo> getBloques() {
+        return bloques;
     }
 }

@@ -62,6 +62,13 @@ public class Atributo {
     }
 
     public void setValorInicial(String valorInicial) {
+        // Si es STRING, quita comillas extra y espacios
+        if (tipo == EnumAtributo.STRING && valorInicial != null) {
+            valorInicial = valorInicial.trim();
+            if (valorInicial.startsWith("\"") && valorInicial.endsWith("\"")) {
+                valorInicial = valorInicial.substring(1, valorInicial.length() - 1);
+            }
+        }
         this.valorInicial = valorInicial;
     }
 
@@ -84,7 +91,13 @@ public class Atributo {
     private String formatValorInicial() {
         switch (tipo) {
             case STRING:
-                return "\"" + valorInicial + "\"";
+                String v = valorInicial != null ? valorInicial.trim() : "";
+                // Evita duplicar comillas: solo añade si no están
+                if (v.startsWith("\"") && v.endsWith("\"")) {
+                    return v;
+                } else {
+                    return "\"" + v + "\"";
+                }
             case BOOLEAN:
                 return valorInicial.toLowerCase();
             case INTEGER:
