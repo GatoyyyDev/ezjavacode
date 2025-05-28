@@ -72,7 +72,7 @@ public class MyClassesView {
     }
 
     private void loadClasses() {
-        File dir = new File("clases_generadas");
+        File dir = new File(Funcional.ExportadorDeClases.leerRutaExportacion());
         File[] files = dir.listFiles((d, name) -> name.endsWith(".java"));
         if (files == null) return;
         for (int i = 0; i < files.length; i++) {
@@ -98,7 +98,7 @@ public class MyClassesView {
 
             editBtn.setOnAction(e -> {
                 // Parsear la clase y cargarla en el generador
-                File file = new File("clases_generadas/" + classNameFinal + ".java");
+                File file = new File(Funcional.ExportadorDeClases.leerRutaExportacion() + "/" + classNameFinal + ".java");
                 Funcional.Clase clase = Funcional.ClaseParser.parse(file);
                 if (clase != null) {
                     Funcional.GeneradorDeClases generador = new Funcional.GeneradorDeClases();

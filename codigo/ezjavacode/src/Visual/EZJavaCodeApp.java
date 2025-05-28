@@ -7,6 +7,7 @@ import Funcional.Funciones.Funcion;
 import Visual.MainMenuView;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -24,7 +25,12 @@ public class EZJavaCodeApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("EZJavaCode - Generador de Clases Java");
-        
+        try {
+            Image logo = new Image(getClass().getResourceAsStream("/Visual/logo.png"));
+            primaryStage.getIcons().add(logo);
+        } catch (Exception e) {
+            System.err.println("No se pudo cargar el logo: " + e.getMessage());
+        }
         // Mostrar el menú principal al iniciar
         showMainMenu();
         
@@ -116,6 +122,18 @@ public class EZJavaCodeApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.setResizable(false); 
+    }
+    
+    /**
+     * Muestra la pantalla de ajustes
+     */
+    public void showSettingsView() {
+        Visual.SettingsView settingsView = new SettingsView(this);
+        Scene scene = new Scene(settingsView.getView(), 600, 400);
+        String css = getClass().getResource("/css/style.css").toExternalForm();
+        scene.getStylesheets().add(css);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("EZJavaCode - Ajustes");
     }
     
     /**

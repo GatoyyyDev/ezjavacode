@@ -3,10 +3,15 @@ package Funcional;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ExportadorDeClases {
 
     public static void guardarClaseComoArchivo(Clase clase, String rutaCarpeta) {
+        if (rutaCarpeta == null || rutaCarpeta.isEmpty()) {
+            rutaCarpeta = leerRutaExportacion();
+        }
         String codigo = clase.generarCodigo();
         String nombreArchivo = clase.getNombre() + ".java";
 
@@ -23,5 +28,18 @@ public class ExportadorDeClases {
         } catch (IOException e) {
             System.err.println("Error al guardar el archivo: " + e.getMessage());
         }
+    }
+
+    public static String leerRutaExportacion() {
+        String defaultPath = "clases_generadas";
+        try {
+            String path = new String(Files.readAllBytes(Paths.get("export_path.txt"))).trim();
+            if (!path.isEmpty()) {
+                return path;
+            }
+        } catch (IOException e) {
+            // Si hay error, usar por defecto
+        }
+        return defaultPath;
     }
 }

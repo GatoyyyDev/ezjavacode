@@ -33,7 +33,6 @@ public class Main {
         Clase claseGenerada = generador.obtenerClase();
 
         // Usar ExportadorDeClases para guardar la clase en un archivo
-        String rutaCarpeta = "clases_generadas";  // Puedes modificar la ruta si lo deseas
-        ExportadorDeClases.guardarClaseComoArchivo(claseGenerada, rutaCarpeta);
+        ExportadorDeClases.guardarClaseComoArchivo(claseGenerada, null);
     }
 }

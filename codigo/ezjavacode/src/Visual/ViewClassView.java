@@ -76,7 +76,7 @@ public class ViewClassView {
     }
 
     private String loadCode(String className) {
-        File file = new File("clases_generadas/" + className + ".java");
+        File file = new File(Funcional.ExportadorDeClases.leerRutaExportacion() + "/" + className + ".java");
         if (!file.exists()) return "No se encontró el archivo de la clase.";
         try {
             return new String(Files.readAllBytes(file.toPath()));

@@ -66,30 +66,29 @@ public class CreateClassView {
         createButton.getStyleClass().add("create-button");
         createButton.getStyleClass().add("menu-button");
         createButton.setOnAction(e -> handleCreateClass());
-        
-        Button cancelButton = new Button("Cancelar");
-        cancelButton.setPrefSize(120, 40);
-        cancelButton.getStyleClass().add("cancel-button");
-        cancelButton.getStyleClass().add("back-button");
-        cancelButton.setOnAction(e -> application.showMainMenu());
-        
+
+        Button backButton = new Button("← Volver al Menú");
+        backButton.setPrefWidth(200);
+        backButton.setMinWidth(200);
+        backButton.setPrefHeight(40);
+        backButton.getStyleClass().add("back-button");
+        backButton.setOnAction(e -> application.showMainMenu());
+
         // Contenedor para los botones
         HBox buttonBox = new HBox(20);
         buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.getChildren().addAll(createButton, cancelButton);
-        
+        buttonBox.getChildren().addAll(createButton);
+
         // Agregar todos los elementos al formulario
         formBox.getChildren().addAll(promptLabel, classNameField, buttonBox);
-        
-        // Botón para volver al menú principal
-        Button backButton = new Button("← Volver al Menú");
-        backButton.setOnAction(e -> application.showMainMenu());
-        backButton.getStyleClass().add("back-button");
+
+        // Botón volver debajo
+        VBox mainBox = new VBox(24, formBox, backButton);
+        mainBox.setAlignment(Pos.CENTER);
+        mainLayout.setCenter(mainBox);
         
         // Estructurar el layout principal
         mainLayout.setTop(titleLabel);
-        mainLayout.setCenter(formBox);
-        mainLayout.setBottom(backButton);
         
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
         BorderPane.setMargin(titleLabel, new Insets(20, 0, 0, 0));

@@ -66,6 +66,7 @@ public class MainMenuView {
         
         // Botón para ajustes
         Button settingsBtn = createMenuButton("Ajustes", null);
+        settingsBtn.setOnAction(e -> application.showSettingsView());
         
         // Agregar botones al grid
         menuGrid.add(createClassBtn, 0, 0);
