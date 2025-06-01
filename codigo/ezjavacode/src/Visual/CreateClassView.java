@@ -61,13 +61,13 @@ public class CreateClassView {
         classNameField.getStyleClass().add("class-name-field");
         
         // Botones de acción
-        Button createButton = new Button("Crear");
-        createButton.setPrefSize(120, 40);
+        Button createButton = new Button("★  Crear  ★");
+        createButton.setPrefSize(140, 40);
         createButton.getStyleClass().add("create-button");
         createButton.getStyleClass().add("menu-button");
         createButton.setOnAction(e -> handleCreateClass());
 
-        Button backButton = new Button("← Volver al Menú");
+        Button backButton = new Button("\uD83E\uDC80 Volver al Menú");
         backButton.setPrefWidth(200);
         backButton.setMinWidth(200);
         backButton.setPrefHeight(40);

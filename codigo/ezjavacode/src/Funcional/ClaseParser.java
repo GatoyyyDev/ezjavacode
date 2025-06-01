@@ -20,12 +20,22 @@ public class ClaseParser {
         }
         if (lineas.isEmpty()) return null;
 
-        // Buscar nombre de la clase
+        // Buscar nombre de la clase (ignorando líneas vacías y comentarios)
         String nombreClase = null;
         for (String l : lineas) {
-            if (l.startsWith("public class ")) {
-                nombreClase = l.split(" ")[2];
-                break;
+            String lTrim = l.trim();
+            if (lTrim.isEmpty() || lTrim.startsWith("//") || lTrim.startsWith("/*") || lTrim.startsWith("*")) continue;
+            if (lTrim.contains("public class ")) {
+                // Busca el nombre después de 'public class'
+                String[] partes = lTrim.split("public class ", 2);
+                if (partes.length > 1) {
+                    String resto = partes[1].trim();
+                    String[] tokens = resto.split("[ {]");
+                    if (tokens.length > 0) {
+                        nombreClase = tokens[0];
+                        break;
+                    }
+                }
             }
         }
         if (nombreClase == null) return null;

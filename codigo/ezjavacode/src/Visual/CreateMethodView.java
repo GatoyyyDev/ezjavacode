@@ -157,14 +157,14 @@ public class CreateMethodView {
         });
 
         // --- Botones alineados en una sola línea ---
-        Button backBtn = new Button("← Volver");
+        Button backBtn = new Button("\uD83E\uDC80 Volver");
         backBtn.getStyleClass().add("back-button");
         backBtn.setPrefWidth(140);
         backBtn.setOnAction(e -> application.showCreateAttributeView(className));
 
-        Button addMethodBtn = new Button("Añadir Método nuevo");
+        Button addMethodBtn = new Button("➕ Añadir Método nuevo ➕");
         addMethodBtn.getStyleClass().add("menu-button");
-        addMethodBtn.setPrefWidth(220);
+        addMethodBtn.setPrefWidth(280);
         addMethodBtn.setOnAction(e -> {
             MethodFormView form = new MethodFormView(className);
             Stage dialog = new Stage();
@@ -217,9 +217,9 @@ public class CreateMethodView {
             dialog.showAndWait();
         });
 
-        Button exportBtn = new Button("Exportar " + className);
+        Button exportBtn = new Button("✓ Exportar " + className +" ✓");
         exportBtn.getStyleClass().add("menu-button");
-        exportBtn.setPrefWidth(220);
+        exportBtn.setPrefWidth(280);
         exportBtn.setOnAction(e -> {
             var generador = application.getGenerador();
             if (generador != null) {

@@ -245,11 +245,11 @@ public class CreateAttributeView {
         grid.add(checkBoxRow, 0, 3, 2, 1);
         
         // Botones de acción
-        Button addButton = new Button("Agregar");
+        Button addButton = new Button("✓ Agregar ✓");
         addButton.getStyleClass().add("menu-button");
         addButton.setOnAction(e -> handleAddAttribute());
         
-        Button deleteButton = new Button("Eliminar");
+        Button deleteButton = new Button("❌ Eliminar ❌");
         deleteButton.getStyleClass().add("delete-button");
         deleteButton.setOnAction(e -> handleDeleteAttribute());
         
@@ -292,11 +292,11 @@ public class CreateAttributeView {
      * Crea los botones de navegación
      */
     private HBox createNavigationButtons() {
-        Button backButton = new Button("← Volver");
+        Button backButton = new Button("\uD83E\uDC80 Volver");
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(e -> application.showCreateClassView());
         
-        Button nextButton = new Button("Siguiente →");
+        Button nextButton = new Button("Siguiente \uD83E\uDC82");
         nextButton.getStyleClass().add("next-button");
         nextButton.setOnAction(e -> handleNextStep());
         

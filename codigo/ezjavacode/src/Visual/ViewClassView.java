@@ -2,20 +2,14 @@ package Visual;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
 public class ViewClassView {
     private BorderPane mainLayout;
@@ -31,56 +25,54 @@ public class ViewClassView {
     }
 
     private void createView() {
+        // Solo prepara el layout, no abre ninguna ventana ni Stage
         mainLayout = new BorderPane();
-        mainLayout.setStyle("-fx-background-color: #b3e0ff;");
+        mainLayout.setStyle("-fx-background-color: white; -fx-border-color: #1170d6; -fx-border-width: 5px; -fx-background-radius: 10px;");
+        mainLayout.setPadding(new Insets(32, 32, 24, 32));
 
-        // Título azul
-        Label titleLabel = new Label("Clase " + className);
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 38));
-        titleLabel.setStyle("-fx-background-color: #1170d6; -fx-text-fill: white; -fx-padding: 18 0 18 0; -fx-background-radius: 2px;");
-        titleLabel.setMaxWidth(Double.MAX_VALUE);
+        Label titleLabel = new Label("Código de la clase " + className);
+        titleLabel.setFont(Font.font("Consolas", FontWeight.BOLD, 28));
+        titleLabel.setTextFill(Color.web("#1170d6"));
         titleLabel.setAlignment(Pos.CENTER);
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
         mainLayout.setTop(titleLabel);
-
-        VBox centerBox = new VBox(0);
-        centerBox.setAlignment(Pos.TOP_CENTER);
-        centerBox.setPadding(new Insets(32, 40, 32, 40));
-
-        Label codeLabel = new Label("Codigo");
-        codeLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        codeLabel.setStyle("-fx-background-color: #dde6ee; -fx-padding: 2 0 2 0; -fx-border-color: #888; -fx-border-width: 0 0 1 0;");
-        codeLabel.setMaxWidth(Double.MAX_VALUE);
-        codeLabel.setAlignment(Pos.CENTER);
+        BorderPane.setAlignment(titleLabel, Pos.CENTER);
+        BorderPane.setMargin(titleLabel, new Insets(0, 0, 18, 0));
 
         TextArea codeArea = new TextArea(code);
         codeArea.setFont(Font.font("Consolas", 17));
         codeArea.setEditable(false);
         codeArea.setWrapText(false);
-        codeArea.setStyle("-fx-background-color: white; -fx-border-color: #888; -fx-border-width: 2px;");
-        codeArea.setPrefRowCount(12);
-        codeArea.setPrefColumnCount(40);
+        codeArea.setStyle("-fx-background-color: #f7fbff; -fx-border-color: #1170d6; -fx-border-width: 2px; -fx-background-radius: 7px;");
+        codeArea.setPrefRowCount(20);
+        codeArea.setPrefColumnCount(60);
+        codeArea.setFocusTraversable(false);
 
         ScrollPane codeScroll = new ScrollPane(codeArea);
         codeScroll.setFitToWidth(true);
+        codeScroll.setFitToHeight(true);
         codeScroll.setStyle("-fx-background-color:transparent;");
+        mainLayout.setCenter(codeScroll);
+        BorderPane.setMargin(codeScroll, new Insets(18, 0, 18, 0));
 
-        centerBox.getChildren().addAll(codeLabel, codeScroll);
-        mainLayout.setCenter(centerBox);
-
-        Button backButton = new Button("← Volver");
-        backButton.setOnAction(e -> application.showMyClassesView());
-        backButton.setStyle("-fx-background-color: #1170d6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6px;");
-        BorderPane.setMargin(backButton, new Insets(24, 0, 24, 24));
-        mainLayout.setBottom(backButton);
-        BorderPane.setAlignment(backButton, Pos.CENTER_LEFT);
+        Button closeButton = new Button("Cerrar");
+        closeButton.setStyle("-fx-background-color: #1170d6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7px; -fx-font-size: 15px; -fx-padding: 7 28;");
+        closeButton.setOnAction(e -> {
+            if (application != null) {
+                application.showMyClassesView();
+            }
+        });
+        mainLayout.setBottom(closeButton);
+        BorderPane.setAlignment(closeButton, Pos.CENTER);
+        BorderPane.setMargin(closeButton, new Insets(16, 0, 0, 0));
     }
 
     private String loadCode(String className) {
-        File file = new File(Funcional.ExportadorDeClases.leerRutaExportacion() + "/" + className + ".java");
+        java.io.File file = new java.io.File(Funcional.ExportadorDeClases.leerRutaExportacion() + "/" + className + ".java");
         if (!file.exists()) return "No se encontró el archivo de la clase.";
         try {
-            return new String(Files.readAllBytes(file.toPath()));
-        } catch (IOException e) {
+            return new String(java.nio.file.Files.readAllBytes(file.toPath()));
+        } catch (java.io.IOException e) {
             return "Error al leer el código de la clase.";
         }
     }

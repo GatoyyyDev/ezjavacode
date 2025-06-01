@@ -57,7 +57,7 @@ public class SettingsView {
         box.setAlignment(Pos.TOP_CENTER);
         mainLayout.setTop(box);
 
-        Button backBtn = new Button("← Volver al Menú");
+        Button backBtn = new Button("\uD83E\uDC80 Volver al Menú");
         backBtn.setPrefWidth(200);
         backBtn.setMinWidth(200);
         backBtn.setPrefHeight(40);

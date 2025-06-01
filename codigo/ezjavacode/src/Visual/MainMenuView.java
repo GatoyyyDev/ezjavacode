@@ -54,18 +54,18 @@ public class MainMenuView {
         menuGrid.setAlignment(Pos.CENTER);
         
         // Botón para crear clase
-        Button createClassBtn = createMenuButton("Crear Clase", null);
+        Button createClassBtn = createMenuButton("★ Crear Clase ★", null);
         createClassBtn.setOnAction(e -> application.showCreateClassView());
         
         // Botón para librerías
-        Button librariesBtn = createMenuButton("Librerías", null);
+        Button librariesBtn = createMenuButton("\uD83D\uDD6E Librerías \uD83D\uDD6E", null);
         
         // Botón para mis clases
-        Button myClassesBtn = createMenuButton("Mis clases", null);
+        Button myClassesBtn = createMenuButton("✪ Mis clases ✪", null);
         myClassesBtn.setOnAction(e -> application.showMyClassesView());
         
         // Botón para ajustes
-        Button settingsBtn = createMenuButton("Ajustes", null);
+        Button settingsBtn = createMenuButton("⚙ Ajustes ⚙", null);
         settingsBtn.setOnAction(e -> application.showSettingsView());
         
         // Agregar botones al grid

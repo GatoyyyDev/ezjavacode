@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -63,7 +64,7 @@ public class MyClassesView {
         mainLayout.setCenter(centerBox);
 
         // Botón para volver al menú principal
-        Button backButton = new Button("← Volver al Menú");
+        Button backButton = new Button("\uD83E\uDC80 Volver al Menú");
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(e -> application.showMainMenu());
         BorderPane.setMargin(backButton, new Insets(24, 0, 24, 24));
@@ -83,15 +84,23 @@ public class MyClassesView {
             nameLabel.setStyle("-fx-text-fill: #005b99;");
             classesGrid.add(nameLabel, 0, i);
 
-            Button editBtn = new Button("Editar");
+            Button editBtn = new Button("📝 Editar");
             editBtn.getStyleClass().add("menu-button");
-            editBtn.setPrefSize(110, 36);
-            Button viewBtn = new Button("Visualizar");
+            editBtn.setPrefWidth(130);
+            editBtn.setStyle("-fx-font-size: 17px; -fx-padding: 4 18 4 12;");
+            editBtn.setTooltip(new Tooltip("Editar clase"));
+
+            Button viewBtn = new Button("👀 Visualizar");
             viewBtn.getStyleClass().add("menu-button");
-            viewBtn.setPrefSize(130, 36); 
-            Button delBtn = new Button("Eliminar");
+            viewBtn.setPrefWidth(150);
+            viewBtn.setStyle("-fx-font-size: 17px; -fx-padding: 4 18 4 12;");
+            viewBtn.setTooltip(new Tooltip("Visualizar código"));
+
+            Button delBtn = new Button("❌ Eliminar");
             delBtn.getStyleClass().add("menu-button");
-            delBtn.setPrefSize(110, 36);
+            delBtn.setPrefWidth(130);
+            delBtn.setStyle("-fx-font-size: 17px; -fx-padding: 4 18 4 12;");
+            delBtn.setTooltip(new Tooltip("Eliminar clase"));
             delBtn.setOnAction(e -> showDeleteDialog(classNameFinal, classFileFinal));
 
             viewBtn.setOnAction(e -> application.showViewClassView(classNameFinal));
@@ -106,6 +115,12 @@ public class MyClassesView {
                     application.setGenerador(generador);
                     application.setCurrentClassName(classNameFinal);
                     application.showCreateAttributeView(classNameFinal);
+                } else {
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                    alert.setTitle("Error al editar");
+                    alert.setHeaderText(null);
+                    alert.setContentText("No se puede editar esta clase porque el archivo tiene un formato incorrecto.\nAsegúrate de que la declaración sea 'public class Nombre {' y no tenga texto antes.");
+                    alert.showAndWait();
                 }
             });
 
