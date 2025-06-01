@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -31,21 +33,25 @@ public class MainMenuView {
         mainLayout.getStyleClass().add("main-background");
         
         // Título de la aplicación
-        Label titleLabel = new Label("EZJavaCode");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 64));
-        titleLabel.getStyleClass().add("title-label");
-        titleLabel.setPadding(new Insets(48, 0, 12, 0));
-        
+        ImageView titleImage = new ImageView(new Image(getClass().getResourceAsStream("/Visual/EZjavacodetexto.png")));
+        titleImage.setPreserveRatio(true);
+        titleImage.setFitHeight(54); // Más pequeño
+        VBox headerBox = new VBox(titleImage);
+        headerBox.setAlignment(Pos.CENTER);
+        headerBox.setPadding(new Insets(48, 0, 12, 0));
+
         // Subtítulo
         Label subtitleLabel = new Label("Generador de Código Java");
         subtitleLabel.setFont(Font.font("Arial", FontWeight.NORMAL, 20));
-        subtitleLabel.getStyleClass().add("subtitle-label");
+        subtitleLabel.setPadding(new Insets(0, 0, 24, 0));
+        subtitleLabel.setStyle("-fx-text-fill: #005b99;");
+        headerBox.getChildren().add(subtitleLabel);
         
         // Contenedor para el título y subtítulo
-        VBox headerBox = new VBox(10);
-        headerBox.setAlignment(Pos.CENTER);
-        headerBox.setPadding(new Insets(20, 0, 40, 0));
-        headerBox.getChildren().addAll(titleLabel, subtitleLabel);
+        // VBox headerBox = new VBox(10);
+        // headerBox.setAlignment(Pos.CENTER);
+        // headerBox.setPadding(new Insets(20, 0, 40, 0));
+        // headerBox.getChildren().addAll(titleLabel, subtitleLabel);
         
         // Botones del menú principal (en un grid de 2x2)
         GridPane menuGrid = new GridPane();
@@ -78,6 +84,13 @@ public class MainMenuView {
         mainLayout.setTop(headerBox);
         mainLayout.setCenter(menuGrid);
         BorderPane.setMargin(menuGrid, new Insets(0, 0, 50, 0));
+        
+        // Firma de autor/copyright
+        Label copyrightLabel = new Label(" 2025 Rubén Matamoros Trigo. Todos los derechos reservados.");
+        copyrightLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #888; -fx-padding: 12 0 24 0;");
+        VBox copyrightBox = new VBox(copyrightLabel);
+        copyrightBox.setAlignment(Pos.CENTER);
+        mainLayout.setBottom(copyrightBox);
     }
     
     /**
