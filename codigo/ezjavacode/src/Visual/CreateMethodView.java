@@ -311,7 +311,7 @@ public class CreateMethodView {
                 }
             }
         }
-        form.getPrivado().setSelected(m.isPrivate());
+        // form.getPrivado().setSelected(m.isPrivate()); // Elimina esta línea, ya no hay checkbox de privado
         form.getEstatico().setSelected(m.isStatic());
         form.getCodeArea().setText(m.getCode());
         form.getReturnField().setText(m.getReturnValue());

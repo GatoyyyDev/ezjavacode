@@ -5,6 +5,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
@@ -18,7 +19,6 @@ public class MethodFormView extends VBox {
     private ComboBox<String> returnTypeCombo;
     private ObservableList<ParameterModel> parametros = FXCollections.observableArrayList();
     private TableView<ParameterModel> paramsTable;
-    private CheckBox privado;
     private CheckBox estatico;
     private ComboBox<String> visibilidadCombo;
     private TextArea codeArea;
@@ -37,7 +37,9 @@ public class MethodFormView extends VBox {
 
         // Título
         Label title = new Label("Crear Metodos/Funciones de " + className);
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        title.setStyle("-fx-text-fill: #1565c0; -fx-padding: 10 0 20 0;");
+        title.setAlignment(Pos.CENTER);
         title.getStyleClass().add("view-title");
 
         // Fila 1: Visibilidad y tipo
@@ -48,11 +50,13 @@ public class MethodFormView extends VBox {
         visibilidadCombo = new ComboBox<>();
         visibilidadCombo.getItems().addAll("public", "private", "protected");
         visibilidadCombo.setValue("public");
+        visibilidadCombo.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-padding: 0 10; -fx-font-size: 15px;");
         Label tipoLabel = new Label("Elegir tipo");
         tipoLabel.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         returnTypeCombo = new ComboBox<>();
         returnTypeCombo.getItems().addAll("void", "int", "double", "String", "boolean");
         returnTypeCombo.setValue("void");
+        returnTypeCombo.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-padding: 0 10; -fx-font-size: 15px;");
         fila1.getChildren().addAll(visLabel, visibilidadCombo, tipoLabel, returnTypeCombo);
 
         // Fila 2: Nombre de la función
@@ -63,6 +67,7 @@ public class MethodFormView extends VBox {
         nameField = new TextField();
         nameField.setPrefWidth(240);
         nameField.setPrefHeight(32);
+        nameField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-padding: 0 10; -fx-font-size: 15px;");
         fila2.getChildren().addAll(nombreLabel, nameField);
 
         this.getChildren().addAll(title, fila1, fila2);
@@ -91,6 +96,10 @@ public class MethodFormView extends VBox {
             private final Button btn = new Button("X");
             {
                 btn.setStyle("-fx-background-color: #e57373; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 2 10; -fx-cursor: hand;");
+                btn.setOnAction(e -> {
+                    ParameterModel param = getTableView().getItems().get(getIndex());
+                    parametros.remove(param);
+                });
             }
             @Override
             protected void updateItem(Void item, boolean empty) {
@@ -114,13 +123,14 @@ public class MethodFormView extends VBox {
         tipoParam.setPrefWidth(100);
         tipoParam.setPrefHeight(32);
         tipoParam.setPromptText("Tipo");
+        tipoParam.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-font-size: 15px;");
         TextField nombreParam = new TextField();
         nombreParam.setPrefWidth(100);
         nombreParam.setPrefHeight(32);
         nombreParam.setPromptText("Nombre");
+        nombreParam.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-font-size: 15px;");
         Button addParamBtn = new Button("Añadir parámetro");
         addParamBtn.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        addParamBtn.setStyle("-fx-background-color: #3db5ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 5 16; -fx-font-size: 15px; -fx-cursor: hand;");
         addParamBtn.setOnAction(e -> {
             String tipo = tipoParam.getText().trim();
             String nombre = nombreParam.getText().trim();
@@ -133,6 +143,8 @@ public class MethodFormView extends VBox {
                 alert.showAndWait();
             }
         });
+        addParamBtn.getStyleClass().clear();
+        addParamBtn.getStyleClass().add("menu-button");
         HBox paramInputBox = new HBox(10, tipoParam, nombreParam, addParamBtn);
         paramInputBox.setMinWidth(380);
         paramInputBox.setMaxWidth(420);
@@ -151,10 +163,11 @@ public class MethodFormView extends VBox {
         paramsBox.setAlignment(Pos.CENTER);
         paramsBox.setPadding(new Insets(0,0,10,0));
 
-        // Privado y estático
-        privado = new CheckBox("¿Privado?");
+        // Estático
         estatico = new CheckBox("¿Estático?");
-        HBox optionsBox = new HBox(20, privado, estatico);
+        estatico.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        estatico.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-padding: 0 10 0 0;");
+        HBox optionsBox = new HBox(20, estatico);
         optionsBox.setAlignment(Pos.CENTER);
 
         // Código
@@ -163,6 +176,7 @@ public class MethodFormView extends VBox {
         codeArea = new TextArea();
         codeArea.setPromptText("Introduce aquí el código del método...");
         codeArea.setPrefRowCount(5);
+        codeArea.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-font-size: 15px;");
 
         // Return
         Label returnLabel = new Label("Return");
@@ -171,19 +185,46 @@ public class MethodFormView extends VBox {
         returnField.setPrefWidth(240);
         returnField.setPrefHeight(32);
         returnField.setPromptText("dejar en blanco para no retornar");
-
-        // Botón incluir método
-        addMethodBtn = new Button("Incluir Método");
-        addMethodBtn.getStyleClass().add("menu-button");
+        returnField.setStyle("-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #b3e0ff; -fx-border-width: 1; -fx-font-size: 15px;");
 
         // Layout principal
         this.getChildren().addAll(
             paramsBox,
             optionsBox,
             codeLabel, codeArea,
-            returnLabel, returnField,
-            addMethodBtn
+            returnLabel, returnField
         );
+
+        // --- BOTÓN INCLUIR MÉTODO ---
+        addMethodBtn = new Button("Incluir Método");
+        addMethodBtn.getStyleClass().clear();
+        addMethodBtn.getStyleClass().add("menu-button");
+        addMethodBtn.setPrefHeight(38);
+        addMethodBtn.setPrefWidth(200);
+        // Añade margen superior
+        VBox.setMargin(addMethodBtn, new Insets(18, 0, 0, 0));
+        // Asegúrate de añadir el botón al layout principal al final
+        this.getChildren().add(addMethodBtn);
+
+        // --- CABECERA AZUL EN LA TABLA DE PARÁMETROS (USANDO CSS DIRECTO SOBRE EL HEADER ROW) ---
+        Runnable forceBlueHeader = () -> {
+            paramsTable.lookupAll(".table-view .column-header-background, .table-view .column-header, .table-view .column-header .label, .column-header-background, .column-header, .column-header .label").forEach(n -> {
+                String style = n.getStyle();
+                // Aplica azul solo si es fondo de cabecera
+                if (n.getStyleClass().contains("column-header-background") || n.getStyleClass().contains("column-header")) {
+                    n.setStyle("-fx-background-color: #3db5ee !important; -fx-border-radius: 6 6 0 0; -fx-background-radius: 6 6 0 0;");
+                }
+                // Aplica blanco y negrita a las etiquetas
+                if (n.getStyleClass().contains("label")) {
+                    n.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;");
+                }
+            });
+        };
+        paramsTable.skinProperty().addListener((obs, oldSkin, newSkin) -> forceBlueHeader.run());
+        paramsTable.widthProperty().addListener((obs, oldVal, newVal) -> forceBlueHeader.run());
+        paramsTable.heightProperty().addListener((obs, oldVal, newVal) -> forceBlueHeader.run());
+        // Llama también tras inicializar
+        forceBlueHeader.run();
     }
 
     public Button getIncluirButton() {
@@ -194,7 +235,7 @@ public class MethodFormView extends VBox {
         String name = nameField.getText().trim();
         String returnType = returnTypeCombo.getValue();
         String visibilidad = visibilidadCombo.getValue();
-        boolean isPriv = privado.isSelected();
+        boolean isPriv = "private".equals(visibilidad); // Solo si el combo es private
         boolean isStat = estatico.isSelected();
         String code = codeArea.getText();
         String ret = returnField.getText().trim();
@@ -213,7 +254,6 @@ public class MethodFormView extends VBox {
         nameField.clear();
         returnTypeCombo.setValue("void");
         parametros.clear();
-        privado.setSelected(false);
         estatico.setSelected(false);
         codeArea.clear();
         returnField.clear();
@@ -223,7 +263,6 @@ public class MethodFormView extends VBox {
     public TextField getNameField() { return nameField; }
     public ComboBox<String> getReturnTypeCombo() { return returnTypeCombo; }
     public TableView<ParameterModel> getParamsTable() { return paramsTable; }
-    public CheckBox getPrivado() { return privado; }
     public CheckBox getEstatico() { return estatico; }
     public ComboBox<String> getVisibilidadCombo() { return visibilidadCombo; }
     public TextArea getCodeArea() { return codeArea; }

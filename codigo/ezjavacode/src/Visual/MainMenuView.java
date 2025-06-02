@@ -65,6 +65,7 @@ public class MainMenuView {
         
         // Botón para librerías
         Button librariesBtn = createMenuButton("\uD83D\uDD6E Librerías \uD83D\uDD6E", null);
+        librariesBtn.setOnAction(e -> application.showMyFunctionsView());
         
         // Botón para mis clases
         Button myClassesBtn = createMenuButton("✪ Mis clases ✪", null);

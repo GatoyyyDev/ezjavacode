@@ -86,15 +86,14 @@
     -fx-font-size: 20px;
     -fx-font-family: 'JetBrains Mono', 'Consolas', 'Monospaced', monospace;
 }
-/* Cabecera azul para todas las tablas (forzado y específico) */
-.table-view .column-header-background,
-.table-view .column-header,
-.table-view .filler,
-.table-view .column-header .label {
+/* CABECERA AZUL PARA TODAS LAS TABLAS */
+.table-view .column-header-background, .table-view .column-header {
     -fx-background-color: #3db5ee !important;
+    -fx-border-radius: 6 6 0 0;
+    -fx-background-radius: 6 6 0 0;
 }
 .table-view .column-header .label {
-    -fx-text-fill: white;
+    -fx-text-fill: white !important;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
 }

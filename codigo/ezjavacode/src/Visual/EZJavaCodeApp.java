@@ -163,6 +163,14 @@ public class EZJavaCodeApp extends Application {
     }
     
     /**
+     * Muestra la ventana de funciones predefinidas
+     */
+    public void showMyFunctionsView() {
+        MyFunctionsView view = new MyFunctionsView(this);
+        primaryStage.getScene().setRoot(view.getView());
+    }
+    
+    /**
      * Método principal para ejecutar la aplicación
      */
     public static void main(String[] args) {
