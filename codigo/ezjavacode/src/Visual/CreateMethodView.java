@@ -15,6 +15,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.io.File;
+import java.util.List;
+import java.nio.file.Files;
 
 public class CreateMethodView {
     private LogoBackgroundPane mainLayout;
@@ -84,40 +86,134 @@ public class CreateMethodView {
         addFromLibraryBtn.setOnAction(e -> {
             // Mostrar ventana con lista de funciones generadas
             Dialog<Void> dialog = new Dialog<>();
-            dialog.setTitle("Selecciona una función de la librería");
-            dialog.setHeaderText("Selecciona una función para añadir como método");
-
-            VBox vbox = new VBox(16);
-            vbox.setPadding(new Insets(18));
-            vbox.setAlignment(Pos.CENTER);
-
-            // Ruta absoluta a funciones_generadas
-            String path = System.getProperty("user.dir") + File.separator + "codigo" + File.separator + "ezjavacode" + File.separator + "funciones_generadas";
-            File dir = new File(path);
+            dialog.setTitle("Añadir método de la librería");
+            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            dialog.getDialogPane().getStyleClass().add("form-panel");
+            // Label fuera del recuadro blanco
+            Label label = new Label("Selecciona un método para añadirlo a tu clase");
+            label.getStyleClass().add("subtitle-label");
+            label.setStyle("-fx-font-weight: bold; -fx-font-size: 20px; -fx-text-fill: #1565c0; -fx-padding: 0 0 18 0;");
+            VBox dialogVBox = new VBox(0);
+            dialogVBox.setAlignment(Pos.TOP_CENTER);
+            dialogVBox.setStyle("");
+            dialogVBox.getChildren().add(label);
+            // Contenedor blanco solo para la lista de métodos
+            VBox contentWrapper = new VBox();
+            contentWrapper.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 14px; -fx-padding: 18 36 18 36; -fx-effect: dropshadow(three-pass-box, #e3e3e3, 8, 0.08, 0, 2);");
+            VBox content = new VBox(18);
+            content.setAlignment(Pos.CENTER_LEFT);
+            // Elimina padding del content, solo en el wrapper
+            File dir = new File("funciones_generadas");
             File[] archivos = dir.listFiles((d, name) -> name.endsWith(".java"));
-            if (archivos != null && archivos.length > 0) {
+
+            if (archivos.length == 0) {
+                Label noFiles = new Label("No hay funciones disponibles en la biblioteca.");
+                noFiles.setStyle("-fx-text-fill: #b71c1c; -fx-font-size: 16px; -fx-font-weight: bold;");
+                content.getChildren().add(noFiles);
+            } else {
                 for (File archivo : archivos) {
-                    HBox fila = new HBox(12);
+                    HBox fila = new HBox();
                     fila.setAlignment(Pos.CENTER_LEFT);
+                    fila.setSpacing(0);
+                    Region filaSpacer = new Region();
+                    HBox.setHgrow(filaSpacer, Priority.ALWAYS);
                     Label nombre = new Label(archivo.getName());
-                    nombre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #005b99;");
+                    nombre.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1565c0; -fx-cursor: hand;");
                     Button agregar = new Button("Agregar");
                     agregar.getStyleClass().add("menu-button");
+                    agregar.setStyle("-fx-font-size: 14px; -fx-min-width: 88px; -fx-padding: 6 18 6 18;");
                     agregar.setOnAction(ev -> {
-                        // TODO: lógica para importar el método
+                        // Leer el archivo seleccionado
+                        try {
+                            List<String> lines = java.nio.file.Files.readAllLines(archivo.toPath());
+                            StringBuilder codeBuilder = new StringBuilder();
+                            String methodName = archivo.getName().replace(".java", "");
+                            String returnType = "void";
+                            String params = "";
+                            String visibilidad = "public";
+                            boolean isPrivate = false;
+                            boolean isStatic = false;
+                            String returnValue = "";
+
+                            // Buscar firma y cuerpo (muy simple)
+                            for (String line : lines) {
+                                String l = line.trim();
+                                if (l.startsWith("public ") || l.startsWith("private ") || l.startsWith("protected ") || l.startsWith("static ") || l.startsWith("void ") || l.contains("(") && l.contains(")")) {
+                                    int paren1 = l.indexOf('(');
+                                    int paren2 = l.indexOf(')');
+                                    if (paren1 > 0 && paren2 > paren1) {
+                                        String beforeParen = l.substring(0, paren1).trim();
+                                        String[] parts = beforeParen.split(" ");
+                                        if (parts.length >= 2) {
+                                            returnType = parts[parts.length-2];
+                                            methodName = parts[parts.length-1];
+                                        }
+                                        params = l.substring(paren1+1, paren2).trim();
+                                    }
+                                    if (l.startsWith("private")) { visibilidad = "private"; isPrivate = true; }
+                                    if (l.contains("static")) isStatic = true;
+                                } else if (!l.isEmpty()) {
+                                    codeBuilder.append(l).append("\n");
+                                    if (l.startsWith("return ")) {
+                                        returnValue = l.substring(7, l.length()-1).trim();
+                                    }
+                                }
+                            }
+                            final String paramsFinal = params;
+                            final String methodNameFinal = methodName;
+                            // --- Comprobar si ya existe un método con el mismo nombre y parámetros ---
+                            boolean exists = methods.stream().anyMatch(m -> m.getName().equals(methodNameFinal) && m.getParameters().equals(paramsFinal));
+                            if (exists) {
+                                new Alert(Alert.AlertType.WARNING, "Ya existe un método con ese nombre y parámetros.").showAndWait();
+                                return;
+                            }
+                            MethodModel nuevo = new MethodModel(methodNameFinal, returnType, paramsFinal, visibilidad, isPrivate, isStatic, codeBuilder.toString(), returnValue);
+                            methods.add(nuevo);
+                            methodTable.refresh();
+
+                            // --- Añadir a la clase real para exportación ---
+                            var clase = application.getGenerador().obtenerClase();
+                            boolean existsInClass = clase.getFunciones().stream().anyMatch(f -> f.getNombre().equals(methodNameFinal) && String.join(", ", f.getParametros()).equals(paramsFinal));
+                            if (!existsInClass) {
+                                Funcional.Funciones.Funcion funcion = new Funcional.Funciones.Funcion(methodNameFinal, returnType, visibilidad);
+                                // Añadir parámetros
+                                if (!paramsFinal.isEmpty()) {
+                                    for (String param : paramsFinal.split(",")) {
+                                        String[] p = param.trim().split(" ");
+                                        if (p.length == 2) funcion.agregarParametro(p[0], p[1]);
+                                    }
+                                }
+                                // Añadir cuerpo como bloque
+                                String bloqueStr = codeBuilder.toString();
+                                Funcional.Funciones.BloqueCodigo bloqueCodigo = new Funcional.Funciones.BloqueCodigo() {
+                                    @Override
+                                    public String generarCodigo() {
+                                        return bloqueStr;
+                                    }
+                                };
+                                funcion.agregarBloque(bloqueCodigo);
+                                clase.agregarFuncion(funcion);
+                            }
+                        } catch (Exception ex) {
+                            new Alert(Alert.AlertType.ERROR, "No se pudo importar el método: " + ex.getMessage()).showAndWait();
+                        }
                         dialog.close();
                     });
-                    fila.getChildren().addAll(nombre, agregar);
-                    vbox.getChildren().add(fila);
+                    fila.getChildren().addAll(nombre, filaSpacer, agregar);
+                    content.getChildren().add(fila);
                 }
-            } else {
-                Label vacio = new Label("No hay funciones generadas disponibles.");
-                vacio.setStyle("-fx-font-size: 15px; -fx-text-fill: #888;");
-                vbox.getChildren().add(vacio);
             }
-
-            dialog.getDialogPane().setContent(vbox);
-            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            contentWrapper.getChildren().add(content);
+            dialogVBox.getChildren().add(contentWrapper);
+            ButtonType cerrarBtn = new ButtonType("Cerrar", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().add(cerrarBtn);
+            // Aplica el estilo al botón de cerrar después de crearlo
+            Button cerrarButton = (Button) dialog.getDialogPane().lookupButton(cerrarBtn);
+            if (cerrarButton != null) {
+                cerrarButton.getStyleClass().add("menu-button");
+                cerrarButton.setStyle("-fx-font-size: 15px; -fx-min-width: 92px; -fx-padding: 8 24 8 24;");
+            }
+            dialog.getDialogPane().setContent(dialogVBox);
             dialog.showAndWait();
         });
         // Espacio entre el botón de librería y la cabecera
@@ -283,31 +379,40 @@ public class CreateMethodView {
             form.getIncluirButton().setOnAction(ev -> {
                 MethodModel m = form.getMethodModel();
                 if (m != null) {
+                    // --- Comprobar si ya existe un método con el mismo nombre y parámetros ---
+                    boolean exists = methods.stream().anyMatch(m2 -> m2.getName().equals(m.getName()) && m2.getParameters().equals(m.getParameters()));
+                    if (exists) {
+                        new Alert(Alert.AlertType.WARNING, "Ya existe un método con ese nombre y parámetros.").showAndWait();
+                        return;
+                    }
                     methods.add(m);
                     var generador = application.getGenerador();
                     if (generador != null) {
                         var clase = generador.obtenerClase();
-                        Funcional.Funciones.Funcion funcion = new Funcional.Funciones.Funcion(m.getName(), m.getReturnType(), m.getVisibilidad());
-                        if (!m.getParameters().isEmpty()) {
-                            String[] params = m.getParameters().split(",");
-                            for (String param : params) {
-                                String[] parts = param.trim().split(" ");
-                                if (parts.length == 2) {
-                                    funcion.agregarParametro(parts[0], parts[1]);
+                        boolean existsInClass = clase.getFunciones().stream().anyMatch(f -> f.getNombre().equals(m.getName()) && String.join(", ", f.getParametros()).equals(m.getParameters()));
+                        if (!existsInClass) {
+                            Funcional.Funciones.Funcion funcion = new Funcional.Funciones.Funcion(m.getName(), m.getReturnType(), m.getVisibilidad());
+                            if (!m.getParameters().isEmpty()) {
+                                String[] params = m.getParameters().split(",");
+                                for (String param : params) {
+                                    String[] parts = param.trim().split(" ");
+                                    if (parts.length == 2) {
+                                        funcion.agregarParametro(parts[0], parts[1]);
+                                    }
                                 }
                             }
+                            StringBuilder bloque = new StringBuilder();
+                            if (!m.getCode().isEmpty()) bloque.append(m.getCode()).append("\n");
+                            if (!m.getReturnValue().isEmpty()) bloque.append("return ").append(m.getReturnValue()).append(";");
+                            Funcional.Funciones.BloqueCodigo bloqueCodigo = new Funcional.Funciones.BloqueCodigo() {
+                                @Override
+                                public String generarCodigo() {
+                                    return bloque.toString();
+                                }
+                            };
+                            funcion.agregarBloque(bloqueCodigo);
+                            clase.agregarFuncion(funcion);
                         }
-                        StringBuilder bloque = new StringBuilder();
-                        if (!m.getCode().isEmpty()) bloque.append(m.getCode()).append("\n");
-                        if (!m.getReturnValue().isEmpty()) bloque.append("return ").append(m.getReturnValue()).append(";");
-                        Funcional.Funciones.BloqueCodigo bloqueCodigo = new Funcional.Funciones.BloqueCodigo() {
-                            @Override
-                            public String generarCodigo() {
-                                return bloque.toString();
-                            }
-                        };
-                        funcion.agregarBloque(bloqueCodigo);
-                        clase.agregarFuncion(funcion);
                     }
                     dialog.close();
                 }
