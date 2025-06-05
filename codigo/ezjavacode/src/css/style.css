@@ -79,9 +79,6 @@
 .attribute-background {
     -fx-background-color: #eaf6fb;
 }
-.main-background {
-    -fx-background-color: #eaf6fb;
-}
 .code-preview-area {
     -fx-font-size: 20px;
     -fx-font-family: 'JetBrains Mono', 'Consolas', 'Monospaced', monospace;
@@ -96,4 +93,8 @@
     -fx-text-fill: white !important;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
+}
+
+.main-background {
+    -fx-background-color: linear-gradient(to bottom, #eaf6fb 0%, #b3e0ff 100%);
 }

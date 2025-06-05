@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
  */
 public class CreateClassView {
     
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private EZJavaCodeApp application;
     private TextField classNameField;
     
@@ -33,9 +34,10 @@ public class CreateClassView {
      * Crea la vista para crear una clase
      */
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.getStyleClass().add("create-class-background");
-        mainLayout.setPadding(new Insets(20));
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.getStyleClass().add("create-class-background");
+        contentPane.setPadding(new Insets(20));
         
         // Título de la ventana
         Label titleLabel = new Label("Crear Clase");
@@ -79,20 +81,16 @@ public class CreateClassView {
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.getChildren().addAll(createButton);
 
-        // Agregar todos los elementos al formulario
-        formBox.getChildren().addAll(promptLabel, classNameField, buttonBox);
+        // Añadir elementos al formulario
+        formBox.getChildren().addAll(promptLabel, classNameField, buttonBox, backButton);
 
-        // Botón volver debajo
-        VBox mainBox = new VBox(24, formBox, backButton);
-        mainBox.setAlignment(Pos.CENTER);
-        mainLayout.setCenter(mainBox);
-        
-        // Estructurar el layout principal
-        mainLayout.setTop(titleLabel);
-        
+        // Añadir título y formulario al BorderPane
+        contentPane.setTop(titleLabel);
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
-        BorderPane.setMargin(titleLabel, new Insets(20, 0, 0, 0));
-        BorderPane.setMargin(backButton, new Insets(20, 0, 10, 10));
+        contentPane.setCenter(formBox);
+
+        // Añadir el contentPane encima del fondo
+        mainLayout.setContent(contentPane);
     }
     
     /**
@@ -120,7 +118,7 @@ public class CreateClassView {
     /**
      * Retorna la vista completa
      */
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

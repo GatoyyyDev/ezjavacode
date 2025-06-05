@@ -7,12 +7,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
 public class ViewClassView {
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private EZJavaCodeApp application;
     private String className;
     private String code;
@@ -25,17 +26,18 @@ public class ViewClassView {
     }
 
     private void createView() {
-        // Solo prepara el layout, no abre ninguna ventana ni Stage
-        mainLayout = new BorderPane();
-        mainLayout.setStyle("-fx-background-color: white; -fx-border-color: #1170d6; -fx-border-width: 5px; -fx-background-radius: 10px;");
-        mainLayout.setPadding(new Insets(32, 32, 24, 32));
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.getStyleClass().add("main-background");
+        contentPane.setPadding(new Insets(20));
+        contentPane.setStyle("-fx-background-color: transparent;");
 
         Label titleLabel = new Label("Código de la clase " + className);
-        titleLabel.setFont(Font.font("Consolas", FontWeight.BOLD, 28));
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 24));
+        titleLabel.getStyleClass().add("view-title");
         titleLabel.setTextFill(Color.web("#1170d6"));
         titleLabel.setAlignment(Pos.CENTER);
         titleLabel.setMaxWidth(Double.MAX_VALUE);
-        mainLayout.setTop(titleLabel);
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 18, 0));
 
@@ -52,7 +54,6 @@ public class ViewClassView {
         codeScroll.setFitToWidth(true);
         codeScroll.setFitToHeight(true);
         codeScroll.setStyle("-fx-background-color:transparent;");
-        mainLayout.setCenter(codeScroll);
         BorderPane.setMargin(codeScroll, new Insets(18, 0, 18, 0));
 
         Button closeButton = new Button("Cerrar");
@@ -62,9 +63,13 @@ public class ViewClassView {
                 application.showMyClassesView();
             }
         });
-        mainLayout.setBottom(closeButton);
         BorderPane.setAlignment(closeButton, Pos.CENTER);
         BorderPane.setMargin(closeButton, new Insets(16, 0, 0, 0));
+
+        contentPane.setTop(titleLabel);
+        contentPane.setCenter(codeScroll);
+        contentPane.setBottom(closeButton);
+        mainLayout.setContent(contentPane);
     }
 
     private String loadCode(String className) {
@@ -77,7 +82,7 @@ public class ViewClassView {
         }
     }
 
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

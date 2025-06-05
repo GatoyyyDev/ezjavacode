@@ -6,6 +6,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -16,7 +18,7 @@ import java.io.File;
 import java.util.List;
 
 public class MyFunctionsView {
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private EZJavaCodeApp application;
     private GridPane functionsGrid;
 
@@ -26,9 +28,11 @@ public class MyFunctionsView {
     }
 
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.getStyleClass().add("main-background");
-        mainLayout.setPadding(new Insets(0, 0, 0, 0));
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.getStyleClass().add("main-background");
+        contentPane.setPadding(new Insets(0, 0, 0, 0));
+        contentPane.setStyle("-fx-background-color: transparent;");
 
         // Cambia el título superior
         Label titleLabel = new Label("Mi libreria de Funciones");
@@ -39,7 +43,7 @@ public class MyFunctionsView {
 
         functionsGrid = new GridPane();
         functionsGrid.setHgap(30);
-        functionsGrid.setVgap(22);
+        functionsGrid.setVgap(30);
         functionsGrid.setAlignment(Pos.CENTER);
         refreshFunctionList();
 
@@ -48,7 +52,9 @@ public class MyFunctionsView {
         VBox centerBox = new VBox(whiteBox);
         centerBox.setAlignment(Pos.CENTER);
         centerBox.setPadding(new Insets(0, 24, 0, 24));
-        mainLayout.setCenter(centerBox);
+
+        // REVERTIR: Elimina el StackPane y el logo, vuelve a dejar la caja blanca directamente como centro
+        contentPane.setCenter(centerBox);
 
         // Botón de nueva función con estilo igual al de volver, pero con + en vez de flecha
         Button addBtn = new Button("+ Nueva función");
@@ -57,14 +63,16 @@ public class MyFunctionsView {
         addBtn.setOnAction(e -> showCreateFunctionDialog());
         VBox topBox = new VBox(titleLabel, addBtn);
         topBox.setAlignment(Pos.CENTER);
-        mainLayout.setTop(topBox);
 
         Button backButton = new Button("\uD83E\uDC80 Volver al Menú");
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(e -> application.showMainMenu());
         BorderPane.setMargin(backButton, new Insets(24, 0, 24, 24));
-        mainLayout.setBottom(backButton);
         BorderPane.setAlignment(backButton, Pos.CENTER_LEFT);
+
+        contentPane.setTop(topBox);
+        contentPane.setBottom(backButton);
+        mainLayout.setContent(contentPane);
     }
 
     private void refreshFunctionList() {
@@ -136,7 +144,7 @@ public class MyFunctionsView {
         dialog.showAndWait();
     }
 
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

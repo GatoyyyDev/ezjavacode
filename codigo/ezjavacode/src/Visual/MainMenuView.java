@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -17,7 +18,8 @@ import javafx.scene.text.FontWeight;
  */
 public class MainMenuView {
     
-    private BorderPane mainLayout;
+    private StackPane mainLayout;
+    private BorderPane contentPane;
     private Visual.EZJavaCodeApp application;
     
     public MainMenuView(Visual.EZJavaCodeApp application) {
@@ -29,8 +31,28 @@ public class MainMenuView {
      * Crea la vista del menú principal
      */
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.getStyleClass().add("main-background");
+        mainLayout = new StackPane();
+        contentPane = new BorderPane();
+        contentPane.getStyleClass().add("main-background");
+        contentPane.setStyle("-fx-background-color: transparent;"); // Asegura transparencia
+        
+        // Imagen de fondo (logo)
+        Image logoImg = null;
+        try {
+            logoImg = new Image(getClass().getResourceAsStream("/Visual/logo.png"));
+            if (logoImg.isError()) {
+                System.err.println("No se pudo cargar el logo.png: " + logoImg.getException());
+            }
+        } catch (Exception e) {
+            System.err.println("Error cargando logo.png: " + e.getMessage());
+        }
+        ImageView bgImage = new ImageView(logoImg);
+        bgImage.setPreserveRatio(true);
+        bgImage.setOpacity(0.13); // Un poco más visible
+        bgImage.setFitWidth(600);
+        bgImage.setFitHeight(600);
+        bgImage.setSmooth(true);
+        bgImage.setCache(true);
         
         // Título de la aplicación
         ImageView titleImage = new ImageView(new Image(getClass().getResourceAsStream("/Visual/EZjavacodetexto.png")));
@@ -46,52 +68,40 @@ public class MainMenuView {
         subtitleLabel.setPadding(new Insets(0, 0, 24, 0));
         subtitleLabel.setStyle("-fx-text-fill: #005b99;");
         headerBox.getChildren().add(subtitleLabel);
-        
-        // Contenedor para el título y subtítulo
-        // VBox headerBox = new VBox(10);
-        // headerBox.setAlignment(Pos.CENTER);
-        // headerBox.setPadding(new Insets(20, 0, 40, 0));
-        // headerBox.getChildren().addAll(titleLabel, subtitleLabel);
-        
+
         // Botones del menú principal (en un grid de 2x2)
         GridPane menuGrid = new GridPane();
         menuGrid.setHgap(20);
         menuGrid.setVgap(20);
         menuGrid.setAlignment(Pos.CENTER);
-        
-        // Botón para crear clase
+
         Button createClassBtn = createMenuButton("★ Crear Clase ★", null);
         createClassBtn.setOnAction(e -> application.showCreateClassView());
-        
-        // Botón para librerías
         Button librariesBtn = createMenuButton("\uD83D\uDD6E Librerías \uD83D\uDD6E", null);
         librariesBtn.setOnAction(e -> application.showMyFunctionsView());
-        
-        // Botón para mis clases
         Button myClassesBtn = createMenuButton("✪ Mis clases ✪", null);
         myClassesBtn.setOnAction(e -> application.showMyClassesView());
-        
-        // Botón para ajustes
         Button settingsBtn = createMenuButton("⚙ Ajustes ⚙", null);
         settingsBtn.setOnAction(e -> application.showSettingsView());
-        
-        // Agregar botones al grid
         menuGrid.add(createClassBtn, 0, 0);
         menuGrid.add(librariesBtn, 1, 0);
         menuGrid.add(myClassesBtn, 0, 1);
         menuGrid.add(settingsBtn, 1, 1);
-        
+
         // Poner todo junto en el layout principal
-        mainLayout.setTop(headerBox);
-        mainLayout.setCenter(menuGrid);
+        contentPane.setTop(headerBox);
+        contentPane.setCenter(menuGrid);
         BorderPane.setMargin(menuGrid, new Insets(0, 0, 50, 0));
-        
+
         // Firma de autor/copyright
         Label copyrightLabel = new Label(" 2025 Rubén Matamoros Trigo. Todos los derechos reservados.");
         copyrightLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #888; -fx-padding: 12 0 24 0;");
         VBox copyrightBox = new VBox(copyrightLabel);
         copyrightBox.setAlignment(Pos.CENTER);
-        mainLayout.setBottom(copyrightBox);
+        contentPane.setBottom(copyrightBox);
+
+        // Añadir imagen de fondo y contenido al StackPane
+        mainLayout.getChildren().addAll(bgImage, contentPane);
     }
     
     /**
@@ -120,7 +130,7 @@ public class MainMenuView {
     /**
      * Retorna la vista completa
      */
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

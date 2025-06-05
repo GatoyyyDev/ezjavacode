@@ -7,14 +7,17 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import java.io.File;
 
 public class CreateMethodView {
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private Visual.EZJavaCodeApp application;
     private String className;
     private ObservableList<MethodModel> methods = FXCollections.observableArrayList();
@@ -40,9 +43,20 @@ public class CreateMethodView {
     }
 
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.setPadding(new Insets(20));
-        mainLayout.getStyleClass().add("attribute-background");
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.setStyle("-fx-background-color: linear-gradient(to bottom, #eaf6fb 0%, #b3e0ff 100%) !important; background: linear-gradient(to bottom, #eaf6fb 0%, #b3e0ff 100%) !important;");
+        contentPane.setPadding(new Insets(20));
+        // Elimina la línea que fuerza transparencia
+        // contentPane.setStyle("-fx-background-color: transparent;");
+
+        // Asegura que la hoja de estilos se aplique SOLO si no está ya aplicada
+        // (Elimina la declaración duplicada de 'css')
+        // Si ya existe, no la vuelve a añadir
+        String css = getClass().getResource("/css/style.css").toExternalForm();
+        if (!contentPane.getStylesheets().contains(css)) {
+            contentPane.getStylesheets().add(css);
+        }
 
         // Título
         Label titleLabel = new Label("Métodos de " + className);
@@ -51,9 +65,74 @@ public class CreateMethodView {
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 20, 0));
 
+        // Separa más el botón de añadir de librería del título
+        Region spacer = new Region();
+        spacer.setMinHeight(32);
+        spacer.setPrefHeight(32);
+        spacer.setMaxHeight(32);
+        // Asegura que el spacer no expanda y no colapse el layout
+        VBox.setVgrow(spacer, Priority.NEVER);
+
+        // Botón para añadir método de la librería
+        Button addFromLibraryBtn = new Button("➕ Añadir método de la librería ➕");
+        addFromLibraryBtn.getStyleClass().add("menu-button");
+        addFromLibraryBtn.setPrefWidth(320);
+        addFromLibraryBtn.setMinHeight(44);
+        addFromLibraryBtn.setMaxHeight(48);
+        addFromLibraryBtn.setFocusTraversable(false);
+        addFromLibraryBtn.setPickOnBounds(true);
+        addFromLibraryBtn.setOnAction(e -> {
+            // Mostrar ventana con lista de funciones generadas
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setTitle("Selecciona una función de la librería");
+            dialog.setHeaderText("Selecciona una función para añadir como método");
+
+            VBox vbox = new VBox(16);
+            vbox.setPadding(new Insets(18));
+            vbox.setAlignment(Pos.CENTER);
+
+            // Ruta absoluta a funciones_generadas
+            String path = System.getProperty("user.dir") + File.separator + "codigo" + File.separator + "ezjavacode" + File.separator + "funciones_generadas";
+            File dir = new File(path);
+            File[] archivos = dir.listFiles((d, name) -> name.endsWith(".java"));
+            if (archivos != null && archivos.length > 0) {
+                for (File archivo : archivos) {
+                    HBox fila = new HBox(12);
+                    fila.setAlignment(Pos.CENTER_LEFT);
+                    Label nombre = new Label(archivo.getName());
+                    nombre.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #005b99;");
+                    Button agregar = new Button("Agregar");
+                    agregar.getStyleClass().add("menu-button");
+                    agregar.setOnAction(ev -> {
+                        // TODO: lógica para importar el método
+                        dialog.close();
+                    });
+                    fila.getChildren().addAll(nombre, agregar);
+                    vbox.getChildren().add(fila);
+                }
+            } else {
+                Label vacio = new Label("No hay funciones generadas disponibles.");
+                vacio.setStyle("-fx-font-size: 15px; -fx-text-fill: #888;");
+                vbox.getChildren().add(vacio);
+            }
+
+            dialog.getDialogPane().setContent(vbox);
+            dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+            dialog.showAndWait();
+        });
+        // Espacio entre el botón de librería y la cabecera
+        VBox topBox = new VBox(0, titleLabel, spacer, addFromLibraryBtn);
+        topBox.setAlignment(Pos.CENTER);
+        topBox.setPadding(new Insets(0, 0, -20, 0)); // Solo espacio inferior
+        VBox.setMargin(addFromLibraryBtn, new Insets(0, 0, 0, 0)); // Sin margen extra sobre el botón
+        contentPane.setTop(topBox);
+
         // Tabla de métodos
         methodTable = new TableView<>();
-        methodTable.setPrefHeight(300); // Reduce la altura preferida de la tabla para que la pantalla sea más compacta
+        // Ajusta la tabla de métodos a un tamaño intermedio
+        methodTable.setPrefHeight(260);
+        methodTable.setMinHeight(170);
+        methodTable.setMaxHeight(320);
         methodTable.setStyle("-fx-background-color: white; -fx-control-inner-background: white; -fx-table-cell-border-color: #b3e0ff; -fx-font-size: 17px;");
         methodTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         TableColumn<MethodModel, String> nameCol = new TableColumn<>("Nombre");
@@ -156,6 +235,23 @@ public class CreateMethodView {
             }
         });
 
+        // Añadir logo semitransparente entre el fondo y la tabla, SIN modificar la tabla
+        ImageView bgImage = new ImageView(new Image(getClass().getResourceAsStream("/Visual/logo.png")));
+        bgImage.setPreserveRatio(true);
+        bgImage.setOpacity(0.13);
+        bgImage.setFitWidth(600);
+        bgImage.setFitHeight(600);
+        bgImage.setSmooth(true);
+        bgImage.setCache(true);
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(bgImage, methodTable); // logo detrás, tabla delante
+
+        // Menos espacio debajo de la tabla
+        VBox centerBox = new VBox(stack);
+        centerBox.setAlignment(Pos.TOP_CENTER);
+        centerBox.setPadding(new Insets(-24, 0, -24, 0)); // Padding negativo fuerte
+        contentPane.setCenter(centerBox);
+
         // --- Botones alineados en una sola línea ---
         Button backBtn = new Button("\uD83E\uDC80 Volver");
         backBtn.getStyleClass().add("back-button");
@@ -176,8 +272,10 @@ public class CreateMethodView {
             root.setPadding(new Insets(32, 0, 32, 0)); // Espacio arriba y abajo
             StackPane.setAlignment(form, Pos.CENTER);
             Scene dialogScene = new Scene(root, 700, 700);
-            String css = getClass().getResource("/css/style.css").toExternalForm();
-            dialogScene.getStylesheets().add(css);
+            String cssDialog = getClass().getResource("/css/style.css").toExternalForm();
+            if (!dialogScene.getStylesheets().contains(cssDialog)) {
+                dialogScene.getStylesheets().add(cssDialog);
+            }
             dialog.setScene(dialogScene);
             dialog.setResizable(false);
             dialog.centerOnScreen();
@@ -238,27 +336,9 @@ public class CreateMethodView {
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setPadding(new Insets(0, 32, 0, 32)); // Sin margen inferior
 
-        // Agrupa título, tabla y botones en un solo VBox
-        VBox contentBox = new VBox(16, titleLabel, methodTable, bottomBox); // Espacio agradable entre título, tabla y botones
-        contentBox.setAlignment(Pos.TOP_CENTER);
-        contentBox.setPadding(new Insets(0, 32, 0, 32));
-
-        // Layout principal
-        BorderPane layout = new BorderPane();
-        layout.setTop(contentBox); // Todo el contenido va arriba
-        layout.setCenter(null);
-        layout.setBottom(null);
-        layout.setStyle("-fx-background-color: #eaf6fb;");
-        String css = getClass().getResource("/css/style.css").toExternalForm();
-        layout.getStylesheets().add(css);
-        mainLayout.setCenter(layout);
-        mainLayout.setMinHeight(Region.USE_COMPUTED_SIZE);
-        mainLayout.setPrefHeight(Region.USE_COMPUTED_SIZE);
-        if (mainLayout.getScene() != null && mainLayout.getScene().getWindow() instanceof Stage) {
-            Stage stage = (Stage) mainLayout.getScene().getWindow();
-            stage.sizeToScene();
-            stage.setResizable(false);
-        }
+        // Añadir contenido al layout principal
+        contentPane.setBottom(bottomBox);
+        mainLayout.setContent(contentPane);
     }
 
     // Precarga los métodos del generador si existen (para edición)
@@ -325,8 +405,10 @@ public class CreateMethodView {
         root.setPadding(new Insets(32, 0, 32, 0)); // Espacio arriba y abajo
         StackPane.setAlignment(form, Pos.CENTER);
         Scene dialogScene = new Scene(root, 700, 700);
-        String css = getClass().getResource("/css/style.css").toExternalForm();
-        dialogScene.getStylesheets().add(css);
+        String cssDialog2 = getClass().getResource("/css/style.css").toExternalForm();
+        if (!dialogScene.getStylesheets().contains(cssDialog2)) {
+            dialogScene.getStylesheets().add(cssDialog2);
+        }
         dialog.setScene(dialogScene);
         dialog.setResizable(false);
         dialog.centerOnScreen();
@@ -378,7 +460,7 @@ public class CreateMethodView {
         alert.showAndWait();
     }
 
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

@@ -10,6 +10,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -19,7 +20,7 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class MyClassesView {
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private EZJavaCodeApp application;
     private GridPane classesGrid;
 
@@ -29,16 +30,18 @@ public class MyClassesView {
     }
 
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.getStyleClass().add("main-background");
-        mainLayout.setPadding(new Insets(0, 0, 0, 0));
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.getStyleClass().add("main-background");
+        contentPane.setPadding(new Insets(0, 0, 0, 0));
+        contentPane.setStyle("-fx-background-color: transparent;");
 
         Label titleLabel = new Label("Mis clases");
         titleLabel.getStyleClass().add("view-title");
-        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 64)); 
+        titleLabel.setFont(Font.font("Arial", FontWeight.BOLD, 48)); 
         titleLabel.setPadding(new Insets(16, 0, 16, 0)); 
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
-        mainLayout.setTop(titleLabel);
+        contentPane.setTop(titleLabel);
 
         classesGrid = new GridPane();
         classesGrid.setHgap(30);
@@ -61,15 +64,17 @@ public class MyClassesView {
         VBox centerBox = new VBox(whiteBox);
         centerBox.setAlignment(Pos.CENTER);
         centerBox.setPadding(new Insets(0, 24, 0, 24));
-        mainLayout.setCenter(centerBox);
+        contentPane.setCenter(centerBox);
 
         // Botón para volver al menú principal
         Button backButton = new Button("\uD83E\uDC80 Volver al Menú");
         backButton.getStyleClass().add("back-button");
         backButton.setOnAction(e -> application.showMainMenu());
         BorderPane.setMargin(backButton, new Insets(24, 0, 24, 24));
-        mainLayout.setBottom(backButton);
+        contentPane.setBottom(backButton);
         BorderPane.setAlignment(backButton, Pos.CENTER_LEFT);
+
+        mainLayout.setContent(contentPane);
     }
 
     private void loadClasses() {
@@ -190,7 +195,7 @@ public class MyClassesView {
         loadClasses();
     }
 
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

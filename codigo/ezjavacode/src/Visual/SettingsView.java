@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import java.io.File;
@@ -13,7 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class SettingsView {
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private Visual.EZJavaCodeApp application;
     private Label rutaLabel;
 
@@ -23,10 +24,12 @@ public class SettingsView {
     }
 
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.getStyleClass().add("attribute-background");
-        mainLayout.setPadding(new Insets(32));
-
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.getStyleClass().add("attribute-background");
+        contentPane.setPadding(new Insets(32));
+        contentPane.setStyle("-fx-background-color: transparent;");
+        
         Label titleLabel = new Label("Ajustes");
         titleLabel.setStyle("-fx-font-size: 38px; -fx-font-weight: bold; -fx-text-fill: #005b99;");
         titleLabel.getStyleClass().add("view-title");
@@ -55,7 +58,7 @@ public class SettingsView {
 
         VBox box = new VBox(32, titleLabel, rutaBox, botonesBox);
         box.setAlignment(Pos.TOP_CENTER);
-        mainLayout.setTop(box);
+        contentPane.setTop(box);
 
         Button backBtn = new Button("\uD83E\uDC80 Volver al Menú");
         backBtn.setPrefWidth(200);
@@ -66,7 +69,8 @@ public class SettingsView {
         VBox bottomBox = new VBox(backBtn);
         bottomBox.setAlignment(Pos.CENTER);
         bottomBox.setPadding(new Insets(32, 0, 0, 0));
-        mainLayout.setBottom(bottomBox);
+        contentPane.setBottom(bottomBox);
+        mainLayout.setContent(contentPane);
     }
 
     private void elegirNuevaRuta() {
@@ -100,7 +104,7 @@ public class SettingsView {
         rutaLabel.setStyle("-fx-font-size: 16px; -fx-background-color: #f7fbff; -fx-padding: 10 20 10 20; -fx-border-color: #1170d6; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-text-fill: #005b99;");
     }
 
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
 }

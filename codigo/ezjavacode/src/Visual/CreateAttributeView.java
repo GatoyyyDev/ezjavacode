@@ -24,6 +24,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -36,7 +37,7 @@ import java.util.Optional;
  */
 public class CreateAttributeView {
     
-    private BorderPane mainLayout;
+    private LogoBackgroundPane mainLayout;
     private EZJavaCodeApp application;
     private String className;
     
@@ -66,10 +67,12 @@ public class CreateAttributeView {
      * Crea la vista para gestionar atributos
      */
     private void createView() {
-        mainLayout = new BorderPane();
-        mainLayout.getStyleClass().add("attribute-background");
-        mainLayout.setPadding(new Insets(20));
-        mainLayout.setMinHeight(700); // Altura mínima para que los botones de abajo siempre sean visibles
+        mainLayout = new LogoBackgroundPane();
+        BorderPane contentPane = new BorderPane();
+        contentPane.getStyleClass().add("attribute-background");
+        contentPane.setPadding(new Insets(20));
+        contentPane.setMinHeight(700);
+        contentPane.setStyle("-fx-background-color: transparent;"); // Fuerza transparencia
         
         // Título de la ventana con el nombre de la clase
         Label titleLabel = new Label("Crear Atributos de " + className);
@@ -89,13 +92,15 @@ public class CreateAttributeView {
         VBox centerBox = new VBox(20);
         centerBox.getChildren().addAll(attributeTable, formBox);
         
-        mainLayout.setTop(titleLabel);
-        mainLayout.setCenter(centerBox);
-        mainLayout.setBottom(navigationButtons);
+        contentPane.setTop(titleLabel);
+        contentPane.setCenter(centerBox);
+        contentPane.setBottom(navigationButtons);
         
         BorderPane.setAlignment(titleLabel, Pos.CENTER);
         BorderPane.setMargin(titleLabel, new Insets(0, 0, 20, 0));
         BorderPane.setMargin(navigationButtons, new Insets(20, 0, 0, 0));
+        
+        mainLayout.setContent(contentPane);
     }
     
     /**
@@ -500,7 +505,7 @@ public class CreateAttributeView {
     /**
      * Retorna la vista completa
      */
-    public BorderPane getView() {
+    public StackPane getView() {
         return mainLayout;
     }
     
