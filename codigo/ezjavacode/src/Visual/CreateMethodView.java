@@ -103,7 +103,7 @@ public class CreateMethodView {
             VBox content = new VBox(18);
             content.setAlignment(Pos.CENTER_LEFT);
             // Elimina padding del content, solo en el wrapper
-            File dir = new File("funciones_generadas");
+            File dir = new File(Visual.PathUtils.getJarDir(), "funciones_generadas");
             File[] archivos = dir.listFiles((d, name) -> name.endsWith(".java"));
 
             if (archivos.length == 0) {

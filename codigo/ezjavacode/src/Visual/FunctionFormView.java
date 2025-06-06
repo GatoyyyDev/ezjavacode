@@ -64,7 +64,7 @@ public class FunctionFormView extends VBox {
     }
 
     private void loadFunction(String functionName) {
-        File file = new File("funciones_generadas/" + functionName + ".java");
+        File file = new File(Visual.PathUtils.getJarDir() + "/funciones_generadas/" + functionName + ".java");
         if (!file.exists()) return;
         try {
             String content = new String(java.nio.file.Files.readAllBytes(file.toPath()));
@@ -88,7 +88,7 @@ public class FunctionFormView extends VBox {
             alert.showAndWait();
             return;
         }
-        File file = new File("funciones_generadas/" + name + ".java");
+        File file = new File(Visual.PathUtils.getJarDir() + "/funciones_generadas/" + name + ".java");
         try (FileWriter fw = new FileWriter(file)) {
             fw.write(code);
         } catch (IOException e) {
