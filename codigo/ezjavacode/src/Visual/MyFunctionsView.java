@@ -92,8 +92,10 @@ public class MyFunctionsView {
             nameLabel.setStyle("-fx-text-fill: #005b99;");
             Button editBtn = new Button("Editar");
             Button delBtn = new Button("Eliminar");
-            editBtn.setStyle("-fx-background-color: #3db5ee; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 5 16; -fx-font-size: 15px;");
-            delBtn.setStyle("-fx-background-color: #e57373; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 7; -fx-padding: 5 16; -fx-font-size: 15px;");
+            editBtn.getStyleClass().add("edit-btn");
+            delBtn.getStyleClass().add("delete-btn");
+            editBtn.setStyle("-fx-font-size: 15px;");
+            delBtn.setStyle("-fx-font-size: 15px;");
             editBtn.setOnAction(e -> showEditFunctionDialog(funcName));
             delBtn.setOnAction(e -> showDeleteDialog(funcName, funcFile));
             HBox btnBox = new HBox(18, editBtn, delBtn);
@@ -116,21 +118,38 @@ public class MyFunctionsView {
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.setResizable(false);
         dialog.setTitle("Eliminar " + funcName);
+
+        StackPane bg = new StackPane();
+        bg.getStyleClass().add("blue-gradient-bg");
+        bg.setStyle("-fx-border-color: #ff0000; -fx-border-width: 12px; -fx-background-radius: 4px;");
+
         VBox box = new VBox(16);
         box.setAlignment(Pos.CENTER);
         box.setPadding(new Insets(0, 0, 18, 0));
-        box.setStyle("-fx-background-color: white; -fx-border-color: #ff0000; -fx-border-width: 12px; -fx-background-radius: 4px;");
+        box.setMaxWidth(420);
+        box.setMinWidth(340);
+        box.setStyle("");
+
         Label title = new Label("Eliminar " + funcName);
         title.setFont(Font.font("Arial", FontWeight.BOLD, 24));
         title.setStyle("-fx-text-fill: #d32f2f;");
+
         Label msg = new Label("¿Seguro que quieres eliminar la función '" + funcName + "'?");
-        msg.setFont(Font.font("Arial", FontWeight.NORMAL, 17));
+        msg.setFont(Font.font("Arial", 17));
+        msg.setStyle("-fx-text-fill: #222; -fx-padding: 12 0 0 0;");
+        msg.setWrapText(true);
+        msg.setAlignment(Pos.CENTER);
+
         HBox btnBox = new HBox(24);
         btnBox.setAlignment(Pos.CENTER);
         Button cancelBtn = new Button("Cancelar");
         Button acceptBtn = new Button("Eliminar");
+        cancelBtn.getStyleClass().add("green-btn");
+        acceptBtn.getStyleClass().add("delete-btn");
         cancelBtn.setPrefWidth(110);
         acceptBtn.setPrefWidth(110);
+        cancelBtn.setPrefHeight(36);
+        acceptBtn.setPrefHeight(36);
         cancelBtn.setOnAction(e -> dialog.close());
         acceptBtn.setOnAction(e -> {
             funcFile.delete();
@@ -139,7 +158,8 @@ public class MyFunctionsView {
         });
         btnBox.getChildren().addAll(cancelBtn, acceptBtn);
         box.getChildren().addAll(title, msg, btnBox);
-        Scene scene = new Scene(box);
+        bg.getChildren().add(box);
+        Scene scene = new Scene(bg);
         dialog.setScene(scene);
         dialog.showAndWait();
     }

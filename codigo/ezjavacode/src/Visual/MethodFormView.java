@@ -111,12 +111,10 @@ public class MethodFormView extends VBox {
         paramsTable.getColumns().setAll(tipoCol, nombreCol, borrarCol);
 
         // --- Altura dinámica de la tabla de parámetros ---
-        parametros.addListener((ListChangeListener<ParameterModel>) c -> {
-            int filas = Math.max(2, Math.min(8, parametros.size()));
-            paramsTable.setPrefHeight(filas * 40 + 32); // 40px por fila aprox + cabecera
-        });
-        paramsTable.setPrefHeight(112); // Mínimo para 2 filas
-        paramsTable.setMaxHeight(8 * 40 + 32); // Máximo para 8 filas
+        paramsTable.setFixedCellSize(38); // altura estándar fila
+        paramsTable.setPrefHeight(38 * 3 + 2); // 3 filas visibles + borde
+        paramsTable.setMinHeight(38 * 3 + 2);
+        paramsTable.setMaxHeight(38 * 3 + 2);
 
         // Input para añadir parámetro
         TextField tipoParam = new TextField();

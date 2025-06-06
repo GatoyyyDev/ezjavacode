@@ -1,0 +1,2 @@
+public void BufferedWriter.write() {
+}
