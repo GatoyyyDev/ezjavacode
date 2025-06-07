@@ -13,7 +13,7 @@ public class StandaloneMethodFormView {
         MethodFormView form = new MethodFormView(functionName == null ? "" : functionName);
         // Si existe la función, cargarla desde funciones_generadas
         if (functionName != null && !functionName.isEmpty()) {
-            java.io.File file = new java.io.File(Visual.PathUtils.getJarDir() + "/funciones_generadas/" + functionName + ".java");
+            java.io.File file = new java.io.File("funciones_generadas/" + functionName + ".java");
             if (file.exists()) {
                 try {
                     String code = new String(java.nio.file.Files.readAllBytes(file.toPath()));
@@ -129,7 +129,7 @@ public class StandaloneMethodFormView {
             }
             sb.append("}\n");
             String functionCode = sb.toString();
-            java.io.File file = new java.io.File(Visual.PathUtils.getJarDir() + "/funciones_generadas/" + method.getName() + ".java");
+            java.io.File file = new java.io.File("funciones_generadas/" + method.getName() + ".java");
             try (java.io.FileWriter fw = new java.io.FileWriter(file)) {
                 fw.write(functionCode);
             } catch (Exception ex) {

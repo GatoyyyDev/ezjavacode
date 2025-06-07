@@ -1,29 +1,26 @@
-# Instrucciones de instalación y ejecución
+Forma 1: Ejecución Directa 
 
-Forma 1:
+	1. Instalar Java JDK 21 
+	Descargue e instale la versión correspondiente desde el siguiente enlace oficial: 
+	https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe 
 
-1. **Instala Java JDK 21**
-   Descarga e instala desde:
-   https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe
-
-2. **Ejecuta EZJavaCode**
-   Haz doble clic en el archivo llamado `EZJavaCodeEjecutable`
-
-- No es necesario instalar nada más, todo lo necesario está incluido en la carpeta del programa.
-
-Forma 2:
-
-Si surge algun problema al ejecutar el .jar con tu dispositivo recomiendo utilizar algun IDE como IntelliJ
-y darle a ejecutar al archivo llamado
-
- **Instala Java JDK 21**
-   Descarga e instala desde:
-   https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe
-
-EZJavaCodeAppLauncher.java
-
-Esta es la ruta donde esta ese archivo
-ezjavacode\codigo\ezjavacode\src\Visual\EZJavaCodeAppLauncher.java
+	2. Ejecutar EZJavaCode 
+	Una vez instalado Java, haga doble clic sobre el archivo llamado 
+	EZJavaCodeEjecutable incluido en la carpeta del programa. 
+	Nota: No es necesario instalar componentes adicionales. Todos los recursos necesarios ya 
+	están integrados en la carpeta del software. 
 
 
-¡Listo! El programa debería abrirse y estar listo para usar.
+Forma 2: Ejecución desde un Entorno de Desarrollo (IDE) 
+
+	En caso de que surjan problemas al ejecutar el archivo .jar, se recomienda utilizar un 
+	entorno de desarrollo como IntelliJ IDEA. 
+
+	1. Instalar Java JDK 21 
+	Descargue e instale Java JDK 21 desde el siguiente enlace: 
+	https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe 
+
+	2. Ejecutar desde el IDE 
+	Abra el proyecto en IntelliJ IDEA y ejecute el archivo 
+	EZJavaCodeAppLauncher.java, ubicado en la siguiente ruta dentro del proyecto: 
+	ezjavacode\codigo\ezjavacode\src\Visual\EZJavaCodeAppLauncher.java

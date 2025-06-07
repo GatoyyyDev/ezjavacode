@@ -77,7 +77,7 @@ public class MyFunctionsView {
 
     private void refreshFunctionList() {
         functionsGrid.getChildren().clear();
-        File dir = new File(Visual.PathUtils.getJarDir(), "funciones_generadas");
+        File dir = new File("funciones_generadas");
         File[] files = dir.listFiles((d, name) -> {
             if (!name.endsWith(".java")) return false;
             // Ocultar archivos internos
